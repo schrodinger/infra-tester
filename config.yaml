@@ -45,6 +45,8 @@ test_plan:
       apply:
         is_idempotent: true
         assertions:
+          - type: ApplySucceeds
+
           - type: OutputEqual
             output_name: sample_output
             output_value: it's working

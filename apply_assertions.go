@@ -16,6 +16,11 @@ type ApplyMetadata struct {
 }
 
 var ValidApplyAssertions = map[string]AssertionImplementation{
+	"ApplySucceeds": {
+		ValidateFunction: func(a Assertion) error { return nil },
+		RunFunction:      AssertApplySucceeds,
+	},
+
 	// Output asserts
 
 	"OutputEqual": {
@@ -46,6 +51,20 @@ var ValidApplyAssertions = map[string]AssertionImplementation{
 		ValidateFunction: func(a Assertion) error { return nil },
 		RunFunction:      AssertNoResourcesAffected,
 	},
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+func AssertApplySucceeds(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, stepMetadata interface{}) {
+	var applyMetadata ApplyMetadata
+	var ok bool
+	if applyMetadata, ok = stepMetadata.(ApplyMetadata); !ok {
+		t.Fatal("stepMetadata is not of type ApplyMetadata")
+	}
+
+	if applyMetadata.Err != nil {
+		t.Fatal("Terraform apply is expected to succeed.")
+	}
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------

@@ -61,6 +61,8 @@ test_plan:
 ```yaml
     apply:
         assertions:
+          - type: ApplySucceeds                                 # Makes sure apply succeeds
+
           - type: OutputEqual                                   # compare the value of an output
             output_name: sample_output                          # name of the output
             output_value: it's working                          # the value it should be equal to

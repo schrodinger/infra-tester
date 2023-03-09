@@ -67,7 +67,9 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 }
 
 func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
-	terraformOptions.Vars = test.Vars
+	if test.Vars != nil {
+		terraformOptions.Vars = test.Vars
+	}
 
 	t.Run("Plan", func(t *testing.T) {
 		if test.WithCleanState {
@@ -85,7 +87,9 @@ func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Opti
 }
 
 func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
-	terraformOptions.Vars = test.Vars
+	if test.Vars != nil {
+		terraformOptions.Vars = test.Vars
+	}
 
 	t.Run("Apply", func(t *testing.T) {
 		if test.WithCleanState {

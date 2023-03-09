@@ -35,3 +35,7 @@ output "another_output" {
 output "yet_another_output" {
   value = "it's working"
 }
+
+output "a_fourth_output" {
+  value = "strings numbers 123 apple 0    orange 13567"
+}

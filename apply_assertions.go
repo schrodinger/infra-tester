@@ -2,6 +2,7 @@ package test
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
@@ -28,6 +29,11 @@ var ValidApplyAssertions = map[string]AssertionImplementation{
 	"OutputContains": {
 		ValidateFunction: validateOutputContainsAssertion,
 		RunFunction:      AssertOutputContains,
+	},
+
+	"OutputMatchesRegex": {
+		ValidateFunction: validateOutputMatchesRegexAssertion,
+		RunFunction:      AssertOutputMatchesRegex,
 	},
 
 	// Resource count asserts
@@ -230,4 +236,51 @@ func AssertOutputContains(t *testing.T, terraformOptions *terraform.Options, ass
 	outputValue := terraform.Output(t, terraformOptions, outputName)
 
 	assert.Contains(t, outputValue, shouldContain, "The property \""+outputName+"\" has an unexpected value. It does not contain the string \""+shouldContain+"\". Value is: \""+outputValue+"\".")
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+type outputMatchesRegexMetadata struct {
+	OutputName string `mapstructure:"output_name"`
+	Regex      string
+}
+
+func validateOutputMatchesRegexAssertion(assertion Assertion) error {
+	var outputMatchesMetadata outputMatchesRegexMetadata
+
+	err := mapstructure.Decode(assertion.Metadata, &outputMatchesMetadata)
+	if err != nil {
+		return fmt.Errorf("error decoding assertion metadata: %s", err)
+	}
+
+	if outputMatchesMetadata.OutputName == "" {
+		return fmt.Errorf("output_name is either not defined or is empty")
+	}
+
+	if outputMatchesMetadata.Regex == "" {
+		return fmt.Errorf("regex is either not defined or is empty")
+	}
+
+	if _, err := regexp.Compile(outputMatchesMetadata.Regex); err != nil {
+		return fmt.Errorf("invalid regular expression")
+	}
+
+	return nil
+}
+
+func AssertOutputMatchesRegex(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, stepMetadata interface{}) {
+	var outputMatchesMetadata outputMatchesRegexMetadata
+
+	err := mapstructure.Decode(assertion.Metadata, &outputMatchesMetadata)
+	if err != nil {
+		t.Fatalf("error decoding assertion metadata: %s", err)
+	}
+
+	// Get properties
+	outputName := outputMatchesMetadata.OutputName
+	regex := outputMatchesMetadata.Regex
+	outputValue := terraform.Output(t, terraformOptions, outputName)
+
+	// regexp is already validated in validateOutputMatchesAssertion so there shouldn't be any panic
+	assert.Regexp(t, regexp.MustCompile(regex), outputValue, "The property \""+outputName+"\" has an unexpected value. It does not match the regular expression \""+regex+"\". Value is: \""+outputValue+"\".")
 }

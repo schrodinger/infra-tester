@@ -81,6 +81,10 @@ test_plan:
             added: 1                                            # Note that the test only checks for values explicitly specified here
             # changed: 0                                        # if "changed" key is omitted, it won't be checked
             # deleted: 5                                        # can also specify number of resources deleted
+
+          - type: OutputMatchesRegex                            # asserts an output matches a regular expression
+            output_name: an_output                              # output name
+            regex: strings \w+ \d+ apple \d\s+\w+               # regular expression
 ```
 
 ## Test Output

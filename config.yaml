@@ -75,3 +75,7 @@ test_plan:
           - type: OutputContains
             output_name: sample_output
             value: working
+
+          - type: OutputMatchesRegex
+            output_name: a_fourth_output
+            regex: strings \w+ \d+ apple \d\s+\w+

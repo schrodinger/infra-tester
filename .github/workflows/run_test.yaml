@@ -1,0 +1,25 @@
+name: Run tests and example config
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  run_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install Go
+        run: conda install -c conda-forge go
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Compile Test Binary
+        run: go test -c
+
+      - name: Run tests
+        run: ./infra-tester.test -test.v

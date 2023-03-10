@@ -77,9 +77,9 @@ test_plan:
             output_name: sample_output                          # name of the output
             value: working                                      # the substring value the output must contain
 
-          - type: AssertNoResourcesAffected                     # Makes sure no resources are affected
+          - type: NoResourcesAffected                             # Makes sure no resources are affected
 
-          - type: AssertResourcesAffected                       # assert number of resources affected
+          - type: ResourcesAffected                             # assert number of resources affected
             added: 1                                            # Note that the test only checks for values explicitly specified here
             # changed: 0                                        # if "changed" key is omitted, it won't be checked
             # deleted: 5                                        # can also specify number of resources deleted

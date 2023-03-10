@@ -43,11 +43,11 @@ var ValidApplyAssertions = map[string]AssertionImplementation{
 
 	// Resource count asserts
 
-	"AssertResourcesAffected": {
+	"ResourcesAffected": {
 		ValidateFunction: validateResourcesModified,
 		RunFunction:      AssertResourcesAffected,
 	},
-	"AssertNoResourcesAffected": {
+	"NoResourcesAffected": {
 		ValidateFunction: func(a Assertion) error { return nil },
 		RunFunction:      AssertNoResourcesAffected,
 	},

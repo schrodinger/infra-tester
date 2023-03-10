@@ -32,7 +32,7 @@ test_plan:
       apply:
         is_idempotent: true
         assertions:
-          - type: AssertResourcesAffected
+          - type: ResourcesAffected
             added: 1
 
     - name: MyThirdTest
@@ -59,7 +59,7 @@ test_plan:
       apply:
         is_idempotent: true
         assertions:
-          - type: AssertNoResourcesAffected
+          - type: NoResourcesAffected
 
     - name: MyFifthTest
       vars:

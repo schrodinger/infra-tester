@@ -1,8 +1,33 @@
 # Terraform Module Tests
 
-Run tests on Terraform module with just a configuration.
+Run tests on Terraform code with just a configuration. `infra-tester` implements the test flow described in the diagram below. The concrete steps in the test flow are described by a **test plan** in YAML format (see the example `config.yaml` to find out more about the format of the test plan). It uses the [terratest](https://terratest.gruntwork.io/) library, but doesn't require any knowledge about terratest or Golang.
 
-Refer the example `config.yaml` on how to use it.
+```mermaid
+flowchart TB
+  subgraph TestPlan[<b>Test Plan</b>]
+    direction TB
+    subgraph Test1[<b>Test 1</b>]
+        direction LR
+        Plan1(Plan\nResource\nCreation) --> AssertP1(Plan\nAssertions\n1..N<sub>1</sub>) --> Create1(Resource\nCreation) --> Assert1(Assertions\n1..M<sub>1</sub>)
+    end
+    subgraph Test2[<b>Test 2</b>]
+        direction LR
+        Plan2(Plan\nResource\nModification) --> AssertP2(Plan\nAssertions\n1..N<sub>2</sub>) --> Create2(Resource\nModification) --> Assert2(Assertions\n1..M<sub>2</sub>)
+    end
+    subgraph TestN[<b>Test N</b>]
+        direction LR
+        PlanN(Plan\nResource\nModification) --> AssertPN(Plan\nAssertions\n1..N<sub>k</sub>) --> CreateN(Resource\nModification) --> AssertN(Assertions\n1..M<sub>k</sub>)
+    end
+    Test1 --> Test2
+    Test2 --> dots((...))
+    dots((...)) --> TestN
+  end
+Start:::term --> Test1
+TestN --> destroy(Destroy\nResources) --> End:::term
+
+style TestPlan fill:#d3d3d3
+classDef term fill:#00FF00,stroke:#333,stroke-width:2px
+```
 
 ### Running the Tests
 

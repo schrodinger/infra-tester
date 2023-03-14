@@ -49,7 +49,7 @@ test_plan:
 
           - type: OutputEqual
             output_name: sample_output
-            output_value: it's working
+            value: it's working
 
     - name: MyFourthTest
       vars:

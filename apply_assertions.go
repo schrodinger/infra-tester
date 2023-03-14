@@ -70,8 +70,8 @@ func AssertApplySucceeds(t *testing.T, terraformOptions *terraform.Options, asse
 // ------------------------------------------------------------------------------------------------------------------------------
 
 type outputEqualMetadata struct {
-	OutputName  string `mapstructure:"output_name"`
-	OutputValue string `mapstructure:"output_value"`
+	OutputName string `mapstructure:"output_name"`
+	Value      string
 }
 
 func validateOutputEqualAssertion(assertion Assertion) error {
@@ -86,8 +86,8 @@ func validateOutputEqualAssertion(assertion Assertion) error {
 		return fmt.Errorf("output_name is either not defined or is empty")
 	}
 
-	if outputEqualMetadata.OutputValue == "" {
-		return fmt.Errorf("output_value is either not defined or is empty")
+	if outputEqualMetadata.Value == "" {
+		return fmt.Errorf("value is either not defined or is empty")
 	}
 
 	return nil
@@ -103,7 +103,7 @@ func AssertOutputEqual(t *testing.T, terraformOptions *terraform.Options, assert
 
 	// Get properties
 	outputName := outputEqualMetadata.OutputName
-	expectedValue := outputEqualMetadata.OutputValue
+	expectedValue := outputEqualMetadata.Value
 	outputValue := terraform.Output(t, terraformOptions, outputName)
 
 	assert.Equal(t, outputValue, expectedValue, "The property \""+outputName+"\" has an unexpected value. Expected value is: \""+expectedValue+"\". Value received is: \""+outputValue+"\".")

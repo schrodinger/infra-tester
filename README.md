@@ -119,21 +119,27 @@ test_plan:
 A test summary is generated at the end of the test, which will look like:
 
 ```
---- PASS: TestMain (4.59s)
-    --- PASS: TestMain/ResourceA (4.59s)
-        --- PASS: TestMain/ResourceA/MyFirstTest (0.41s)
-            --- PASS: TestMain/ResourceA/MyFirstTest/Plan (0.41s)
-        --- PASS: TestMain/ResourceA/MySecondTest (1.29s)
-            --- PASS: TestMain/ResourceA/MySecondTest/Plan (0.47s)
-            --- PASS: TestMain/ResourceA/MySecondTest/Apply (0.82s)
-        --- PASS: TestMain/ResourceA/MyThirdTest (0.66s)
-            --- PASS: TestMain/ResourceA/MyThirdTest/Apply (0.66s)
-        --- PASS: TestMain/ResourceA/MyFourthTest (0.59s)
-            --- PASS: TestMain/ResourceA/MyFourthTest/Apply (0.59s)
-        --- PASS: TestMain/ResourceA/MyFifthTest (0.70s)
-            --- PASS: TestMain/ResourceA/MyFifthTest/Apply (0.70s)
+-- PASS: TestMain (4.39s)
+    --- PASS: TestMain/<TestPlanName> (4.39s)
+        --- PASS: TestMain/<TestPlanName>/<TestName> (0.25s)
+            --- PASS: TestMain/<TestPlanName>/<TestName>/Plan (0.25s)
+                --- PASS: TestMain/<TestPlanName>/<TestName>/Plan/<PlanAssertion1> (0.00s)
+                --- PASS: TestMain/<TestPlanName>/<TestName>/Plan/<PlanAssertion2> (0.00s)
+                    ...
+            --- PASS: TestMain/<TestPlanName>/<TestName>/Apply (0.25s)
+                --- PASS: TestMain/<TestPlanName>/<TestName>/Apply/<ApplyAssertion1> (0.00s)
+                --- PASS: TestMain/<TestPlanName>/<TestName>/Apply/<ApplyAssertion2> (0.00s)
+                    ...
 PASS
-ok      schrodinger.com/tf-test-config-parser   5.418s
+ok      schrodinger.com/infra-tester    4.890s
 ```
 
-Plan and Apply tests are separated so you can run them separately using `-run`
+In the above test summary:
+- TestPlanName is obtained from value of `test_plan` field in the yaml config.
+- TestName corresponds to the name of each test defined in the test plan.
+- PlanAssertion1, PlanAssertion2, and so on refers to assertions in the plan step
+- ApplyAssertion1, ApplyAssertion2, and so on refers to assertions in the apply step
+
+
+As seen in the test summary, Plan and Apply tests are separated so you can run them separately using `-run`.
+> **Note** If a test is dependent (e.g, by using a test as a "stage") on the resultant Terraform state of a previous test, then selectively running a test that has such a dependency will obviously fail. In this case, you might want to name the test and it's dependency test in such a way that, when you selectively run the test with a test name pattern, both the tests will be selected.

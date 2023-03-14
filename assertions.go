@@ -55,9 +55,19 @@ func runAssertion(t *testing.T, terraformOptions *terraform.Options, assertion A
 	assertionImplementation, err := getAssertionImplementation(assertionType, step)
 	if err != nil {
 		// This shouldn't happen as we are validating the tests before running them
-		t.Fatalf("ERROR: Failure while running assertion: %s.\n", err)
+		errorAndSkipf(t, "ERROR: Failure while running assertion: %s.\n", err)
 	}
 
 	runFunction := assertionImplementation.RunFunction
 	runFunction(t, terraformOptions, assertion, stepMetadata)
+}
+
+func errorAndSkip(t *testing.T, args ...any) {
+	t.Error(args...)
+	t.SkipNow()
+}
+
+func errorAndSkipf(t *testing.T, format string, args ...any) {
+	t.Errorf(format, args...)
+	t.SkipNow()
 }

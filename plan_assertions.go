@@ -33,11 +33,11 @@ func AssertPlanSucceeds(t *testing.T, terraformOptions *terraform.Options, asser
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		t.Fatal("stepMetadata is not of type PlanMetadata")
+		t.Error("stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err != nil {
-		t.Fatal("Terraform plan is expected to succeed.")
+		t.Error("Terraform plan is expected to succeed.")
 	}
 }
 
@@ -66,18 +66,18 @@ func AssertPlanFailsWithError(t *testing.T, terraformOptions *terraform.Options,
 	var planFailsWithErrorMetadata planFailsWithErrorMetadata
 	err := mapstructure.Decode(assertion.Metadata, &planFailsWithErrorMetadata)
 	if err != nil {
-		t.FailNow()
+		errorAndSkipf(t, "Error decoding assertion metadata: %s", err)
 	}
 
 	// cast stepMetadata to PlanMetadata
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		t.Fatal("stepMetadata is not of type PlanMetadata")
+		errorAndSkip(t, "stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err == nil {
-		t.Fatal("Terraform plan is expected to fail.")
+		errorAndSkip(t, "Terraform plan is expected to fail.")
 	}
 
 	receivedError := strings.Replace(planMetadata.Err.Error(), "\n", " ", -1)

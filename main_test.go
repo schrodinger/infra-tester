@@ -16,7 +16,7 @@ func TestMain(t *testing.T) {
 
 	testPlan, err := getTests()
 	if err != nil {
-		t.Fatalf("ERROR: Failed to process all tests: %s", err)
+		t.Errorf("ERROR: Failed to process all tests: %s", err)
 	}
 
 	// // fmt.Printf("DEBUG: ")
@@ -24,13 +24,13 @@ func TestMain(t *testing.T) {
 
 	// Validate the tests
 	if err = validateTests(testPlan.Tests); err != nil {
-		t.Fatalf("ERROR: Failure during test validation: %s", err)
+		errorAndSkipf(t, "ERROR: Failure during test validation: %s", err)
 	}
 
 	t.Run(testPlan.Name, func(t *testing.T) {
 		_, err = terraform.InitE(t, terraformOptions)
 		if err != nil {
-			t.Fatalf("ERROR: Failure during terraform init: %s", err)
+			errorAndSkipf(t, "ERROR: Failure during terraform init: %s", err)
 		}
 
 		runTests(t, terraformOptions, testPlan)
@@ -42,15 +42,21 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 	defer terraform.Destroy(t, terraformOptions)
 
 	for _, test := range testPlan.Tests {
-		// Run all plan assertions first
 		t.Run(test.Name, func(t *testing.T) {
+			skipApplyTests := false
+
+			// Run all plan assertions first
 			if test.PlanAssertions.Assertions == nil {
 				t.Logf("No plan assertions for %s", test.Name)
 			} else {
 				runPlanAssertions(t, test, terraformOptions)
 
+				// Skip all the apply assertions if any plan assertions failed. We may want to provide this as an
+				// option in the future.
 				if t.Failed() {
 					t.Logf("Plan assertions failed for %s, skipping Apply assertions", test.Name)
+
+					skipApplyTests = true
 				}
 			}
 
@@ -58,7 +64,7 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 			if test.ApplyAssertions.Assertions == nil {
 				t.Logf("No apply assertions for %s", test.Name)
 			} else {
-				runApplyAssertions(t, test, terraformOptions)
+				runApplyAssertions(t, test, terraformOptions, skipApplyTests)
 			}
 		})
 	}
@@ -67,11 +73,11 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 }
 
 func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
-	if test.Vars != nil {
-		terraformOptions.Vars = test.Vars
-	}
-
 	t.Run("Plan", func(t *testing.T) {
+		if test.Vars != nil {
+			terraformOptions.Vars = test.Vars
+		}
+
 		if test.WithCleanState {
 			t.Logf("INFO: with_clean_state enabled - running destroy before plan for %s", test.Name)
 			terraform.Destroy(t, terraformOptions)
@@ -81,20 +87,29 @@ func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Opti
 		planMetadata := PlanMetadata{stdOutErr, err}
 
 		for _, assertion := range test.PlanAssertions.Assertions {
-			runAssertion(t, terraformOptions, assertion, "plan", planMetadata)
+			t.Run(assertion.Type, func(t *testing.T) {
+				runAssertion(t, terraformOptions, assertion, "plan", planMetadata)
+			})
 		}
 	})
 }
 
-func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
-	if test.Vars != nil {
-		terraformOptions.Vars = test.Vars
-	}
-
+func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Options, skipTests bool) {
 	t.Run("Apply", func(t *testing.T) {
+		if skipTests {
+			t.SkipNow()
+		}
+
+		if test.Vars != nil {
+			terraformOptions.Vars = test.Vars
+		}
+
 		if test.WithCleanState {
 			t.Logf("INFO: with_clean_state enabled - running destroy before apply for %s", test.Name)
-			terraform.Destroy(t, terraformOptions)
+			_, err := terraform.DestroyE(t, terraformOptions)
+			if err != nil {
+				errorAndSkipf(t, "ERROR: Failure during terraform destroy: %s", err)
+			}
 		}
 
 		var stdOutErr string
@@ -107,7 +122,9 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 		applyMetadata := ApplyMetadata{stdOutErr, err}
 
 		for _, assertion := range test.ApplyAssertions.Assertions {
-			runAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
+			t.Run(assertion.Type, func(t *testing.T) {
+				runAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
+			})
 		}
 	})
 }

@@ -8,3 +8,6 @@
 # Ignore Terraform lock, state and provider files
 .terraform.lock.hcl
 
+# Ignore bin/
+bin/**
+

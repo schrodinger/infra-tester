@@ -114,7 +114,7 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 
 		var stdOutErr string
 		var err error
-		if test.ApplyAssertions.IsIdempotent {
+		if test.ApplyAssertions.EnsureIdempotent {
 			stdOutErr, err = terraform.ApplyAndIdempotentE(t, terraformOptions)
 		} else {
 			stdOutErr, err = terraform.ApplyE(t, terraformOptions)

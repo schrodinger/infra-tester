@@ -43,7 +43,7 @@ test_plan:
           id: 2
           count: 2
       apply:
-        is_idempotent: true
+        ensure_idempotent: true
         assertions:
           - type: ApplySucceeds
 

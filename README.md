@@ -60,7 +60,7 @@ test_plan:
         assertions:
           - type: PlanSucceeds
       apply:                                            # Any assertions that are to run during the plan step
-        is_idempotent: true                             # If true, makes sure the plan is idempotent
+        ensure_idempotent: true                         # If true, makes sure the plan is idempotent
         assertions:                                     # list of assertions
           - type: <AssertionType>                       # The type of assertion
             <Assertion Inputs>                          # Any inputs to the assertions

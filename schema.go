@@ -23,8 +23,8 @@ type PlanAssertions struct {
 }
 
 type ApplyAssertions struct {
-	IsIdempotent bool `mapstructure:"is_idempotent"`
-	Assertions   []Assertion
+	EnsureIdempotent bool `mapstructure:"ensure_idempotent"`
+	Assertions       []Assertion
 }
 
 type Assertion struct {

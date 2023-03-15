@@ -67,7 +67,7 @@ test_plan:
 
           - type: OutputEqual                           # An example assertion
             output_name: sample_output
-            output_value: it's working
+            value: it's working
 ```
 
 ## Assertions
@@ -90,7 +90,7 @@ test_plan:
 
           - type: OutputEqual                                   # compare the value of an output
             output_name: sample_output                          # name of the output
-            output_value: it's working                          # the value it should be equal to
+            value: it's working                                 # the value it should be equal to
 
           - type: OutputsAreEqual                               # make sure values of multiple outputs are equal
             output_names:                                       # the list of output names, all of which should have same value
@@ -102,7 +102,7 @@ test_plan:
             output_name: sample_output                          # name of the output
             value: working                                      # the substring value the output must contain
 
-          - type: NoResourcesAffected                             # Makes sure no resources are affected
+          - type: NoResourcesAffected                           # Makes sure no resources are affected
 
           - type: ResourcesAffected                             # assert number of resources affected
             added: 1                                            # Note that the test only checks for values explicitly specified here

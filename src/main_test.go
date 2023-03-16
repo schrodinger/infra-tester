@@ -8,6 +8,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
+	"schrodinger.com/infra-tester/assertions"
 )
 
 func TestMain(t *testing.T) {
@@ -16,7 +17,7 @@ func TestMain(t *testing.T) {
 
 	testPlan, err := getTests()
 	if err != nil {
-		t.Errorf("ERROR: Failed to process all tests: %s", err)
+		t.Fatalf("ERROR: Failed to process all tests: %s", err)
 	}
 
 	// // fmt.Printf("DEBUG: ")
@@ -24,13 +25,13 @@ func TestMain(t *testing.T) {
 
 	// Validate the tests
 	if err = validateTests(testPlan.Tests); err != nil {
-		errorAndSkipf(t, "ERROR: Failure during test validation: %s", err)
+		assertions.ErrorAndSkipf(t, "ERROR: Failure during test validation: %s", err)
 	}
 
 	t.Run(testPlan.Name, func(t *testing.T) {
 		_, err = terraform.InitE(t, terraformOptions)
 		if err != nil {
-			errorAndSkipf(t, "ERROR: Failure during terraform init: %s", err)
+			assertions.ErrorAndSkipf(t, "ERROR: Failure during terraform init: %s", err)
 		}
 
 		runTests(t, terraformOptions, testPlan)
@@ -84,11 +85,11 @@ func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Opti
 		}
 
 		stdOutErr, err := terraform.PlanE(t, terraformOptions)
-		planMetadata := PlanMetadata{stdOutErr, err}
+		planMetadata := assertions.PlanMetadata{CmdOut: stdOutErr, Err: err}
 
 		for _, assertion := range test.PlanAssertions.Assertions {
 			t.Run(assertion.Type, func(t *testing.T) {
-				runAssertion(t, terraformOptions, assertion, "plan", planMetadata)
+				assertions.RunAssertion(t, terraformOptions, assertion, "plan", planMetadata)
 			})
 		}
 	})
@@ -108,7 +109,7 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 			t.Logf("INFO: with_clean_state enabled - running destroy before apply for %s", test.Name)
 			_, err := terraform.DestroyE(t, terraformOptions)
 			if err != nil {
-				errorAndSkipf(t, "ERROR: Failure during terraform destroy: %s", err)
+				assertions.ErrorAndSkipf(t, "ERROR: Failure during terraform destroy: %s", err)
 			}
 		}
 
@@ -119,11 +120,11 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 		} else {
 			stdOutErr, err = terraform.ApplyE(t, terraformOptions)
 		}
-		applyMetadata := ApplyMetadata{stdOutErr, err}
+		applyMetadata := assertions.ApplyMetadata{CmdOut: stdOutErr, Err: err}
 
 		for _, assertion := range test.ApplyAssertions.Assertions {
 			t.Run(assertion.Type, func(t *testing.T) {
-				runAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
+				assertions.RunAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
 			})
 		}
 	})

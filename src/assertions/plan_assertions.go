@@ -1,4 +1,4 @@
-package test
+package assertions
 
 import (
 	"fmt"
@@ -9,6 +9,10 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 )
+
+type PlanAssertions struct {
+	Assertions []Assertion
+}
 
 type PlanMetadata struct {
 	CmdOut string
@@ -66,18 +70,18 @@ func AssertPlanFailsWithError(t *testing.T, terraformOptions *terraform.Options,
 	var planFailsWithErrorMetadata planFailsWithErrorMetadata
 	err := mapstructure.Decode(assertion.Metadata, &planFailsWithErrorMetadata)
 	if err != nil {
-		errorAndSkipf(t, "Error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "Error decoding assertion metadata: %s", err)
 	}
 
 	// cast stepMetadata to PlanMetadata
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		errorAndSkip(t, "stepMetadata is not of type PlanMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err == nil {
-		errorAndSkip(t, "Terraform plan is expected to fail.")
+		ErrorAndSkip(t, "Terraform plan is expected to fail.")
 	}
 
 	receivedError := strings.Replace(planMetadata.Err.Error(), "\n", " ", -1)

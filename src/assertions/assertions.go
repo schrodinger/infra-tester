@@ -1,4 +1,4 @@
-package test
+package assertions
 
 import (
 	"fmt"
@@ -7,12 +7,17 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
+type Assertion struct {
+	Type     string
+	Metadata map[interface{}]interface{} `mapstructure:",remain"`
+}
+
 type AssertionImplementation struct {
 	ValidateFunction func(Assertion) error
 	RunFunction      func(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, stepMetadata interface{})
 }
 
-func getAssertionImplementation(assertionType string, step string) (AssertionImplementation, error) {
+func GetAssertionImplementation(assertionType string, step string) (AssertionImplementation, error) {
 	var assertionImplementation AssertionImplementation
 	var ok bool
 	if step == "plan" {
@@ -38,8 +43,8 @@ func getAssertionImplementation(assertionType string, step string) (AssertionImp
 	return assertionImplementation, nil
 }
 
-func validateAssertion(assertion Assertion, step string) error {
-	AssertionImplementation, err := getAssertionImplementation(assertion.Type, step)
+func ValidateAssertion(assertion Assertion, step string) error {
+	AssertionImplementation, err := GetAssertionImplementation(assertion.Type, step)
 	if err != nil {
 		return err
 	}
@@ -48,26 +53,26 @@ func validateAssertion(assertion Assertion, step string) error {
 	return validateFunction(assertion)
 }
 
-func runAssertion(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, step string, stepMetadata interface{}) {
+func RunAssertion(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, step string, stepMetadata interface{}) {
 	assertionType := assertion.Type
 	var assertionImplementation AssertionImplementation
 
-	assertionImplementation, err := getAssertionImplementation(assertionType, step)
+	assertionImplementation, err := GetAssertionImplementation(assertionType, step)
 	if err != nil {
 		// This shouldn't happen as we are validating the tests before running them
-		errorAndSkipf(t, "ERROR: Failure while running assertion: %s.\n", err)
+		ErrorAndSkipf(t, "ERROR: Failure while running assertion: %s.\n", err)
 	}
 
 	runFunction := assertionImplementation.RunFunction
 	runFunction(t, terraformOptions, assertion, stepMetadata)
 }
 
-func errorAndSkip(t *testing.T, args ...any) {
+func ErrorAndSkip(t *testing.T, args ...any) {
 	t.Error(args...)
 	t.SkipNow()
 }
 
-func errorAndSkipf(t *testing.T, format string, args ...any) {
+func ErrorAndSkipf(t *testing.T, format string, args ...any) {
 	t.Errorf(format, args...)
 	t.SkipNow()
 }

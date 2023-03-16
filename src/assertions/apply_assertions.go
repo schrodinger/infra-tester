@@ -1,4 +1,4 @@
-package test
+package assertions
 
 import (
 	"fmt"
@@ -9,6 +9,11 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 )
+
+type ApplyAssertions struct {
+	EnsureIdempotent bool `mapstructure:"ensure_idempotent"`
+	Assertions       []Assertion
+}
 
 type ApplyMetadata struct {
 	CmdOut string
@@ -59,11 +64,11 @@ func AssertApplySucceeds(t *testing.T, terraformOptions *terraform.Options, asse
 	var applyMetadata ApplyMetadata
 	var ok bool
 	if applyMetadata, ok = stepMetadata.(ApplyMetadata); !ok {
-		errorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
 	}
 
 	if applyMetadata.Err != nil {
-		errorAndSkip(t, "Terraform apply is expected to succeed.")
+		ErrorAndSkip(t, "Terraform apply is expected to succeed.")
 	}
 }
 
@@ -98,7 +103,7 @@ func AssertOutputEqual(t *testing.T, terraformOptions *terraform.Options, assert
 
 	err := mapstructure.Decode(assertion.Metadata, &outputEqualMetadata)
 	if err != nil {
-		errorAndSkipf(t, "error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties
@@ -136,14 +141,14 @@ func AssertResourcesAffected(t *testing.T, terraformOptions *terraform.Options, 
 	var resourcesModifiedMetadata resourcesModifiedMetadata
 	decoderMetadata, err := decodeWithMetadata(assertion, &resourcesModifiedMetadata)
 	if err != nil {
-		errorAndSkipf(t, "error while decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error while decoding assertion metadata: %s", err)
 	}
 
 	// cast stepMetadata to ApplyMetadata
 	var applyMetadata ApplyMetadata
 	var ok bool
 	if applyMetadata, ok = stepMetadata.(ApplyMetadata); !ok {
-		errorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
 	}
 
 	resourcesCount := terraform.GetResourceCount(t, applyMetadata.CmdOut)
@@ -196,7 +201,7 @@ func AssertOutputsAreEqual(t *testing.T, terraformOptions *terraform.Options, as
 
 	err := mapstructure.Decode(assertion.Metadata, &outputsAreEqualMetadata)
 	if err != nil {
-		errorAndSkipf(t, "error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// get output names and values
@@ -246,7 +251,7 @@ func AssertOutputContains(t *testing.T, terraformOptions *terraform.Options, ass
 
 	err := mapstructure.Decode(assertion.Metadata, &outputContainsMetadata)
 	if err != nil {
-		errorAndSkipf(t, "error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties
@@ -292,7 +297,7 @@ func AssertOutputMatchesRegex(t *testing.T, terraformOptions *terraform.Options,
 
 	err := mapstructure.Decode(assertion.Metadata, &outputMatchesMetadata)
 	if err != nil {
-		errorAndSkipf(t, "error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties

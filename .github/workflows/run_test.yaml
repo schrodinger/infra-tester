@@ -21,15 +21,19 @@ jobs:
       - name: Install Go toolchain
         uses: actions/setup-go@v3
         with:
-          go-version-file: 'go.mod'
+          go-version-file: 'src/go.mod'
 
       - name: Code Consistency Checks
         run: |
+          cd src/
           output=$(gofmt -l .)
+          echo "$output"
           test -z $output
 
       - name: Compile Test Binary
-        run: go test -c -o bin/infra-tester
+        run: |
+          cd src/
+          go test -c -o ../bin/infra-tester
 
       - name: Run Sample Terraform Tests
         run: |

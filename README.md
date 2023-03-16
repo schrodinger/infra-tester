@@ -31,9 +31,25 @@ classDef term fill:#00FF00,stroke:#333,stroke-width:2px
 
 ### Running the Tests
 
-You can run the tests with `go test -v`
+#### Compiling the Test Binary
 
-You can run specific tests with `go test -v -run <test name pattern>`. See more about `-run` [here](https://pkg.go.dev/testing#hdr-Subtests_and_Sub_benchmarks)
+1. Change directory to [**`src/`**](src/).
+2. Compile the binary by executing:
+```
+go test -c -o ../bin/infra-tester
+```
+3. If everything went fine, you will see the binary file named `infra-tester` in the `bin/` folder in root of this project. You can now copy this binary to one of the directories in you `$PATH` variable, or add the `bin/` directory to your `$PATH`.
+
+#### Use `infra-tester` to Run the Example Tests
+
+The below steps assume you have already compiled the binary and is added to `$PATH`.
+
+1. Change directory to where the tests are located. You can find example tests in [**`example/`**](example/).
+2. Run the tests by executing:
+```
+infra-tester -test.v
+```
+`-test.v` flag runs the test in verbose mode. You can see the full list of flags by running `infra-tester --help`
 
 ### Writing the Config
 
@@ -136,10 +152,10 @@ ok      schrodinger.com/infra-tester    4.890s
 
 In the above test summary:
 - `TestPlanName` is obtained from the `name` property of `test_plan` in the yaml config.
-- TestName corresponds to the name of each test defined in the test plan.
-- PlanAssertion1, PlanAssertion2, and so on refers to assertions in the plan step.
-- ApplyAssertion1, ApplyAssertion2, and so on refers to assertions in the apply step.
+- `TestName` corresponds to the `name` of each test defined in the test plan.
+- `PlanAssertion1`, `PlanAssertion2`, and so on refers to assertions in the plan step.
+- `ApplyAssertion1`, `ApplyAssertion2`, and so on refers to assertions in the apply step.
 
 
-As seen in the test summary, Plan and Apply tests are separated so you can run them separately using `-run`.
+As seen in the test summary, Plan and Apply tests are separated so you can run them separately using `-test.run` flag.
 > **Note** If a test is dependent (e.g, by using a test as a "stage") on the resultant Terraform state of a previous test, then selectively running a test that has such a dependency will obviously fail. In this case, you might want to name the test and it's dependency test in such a way that, when you selectively run the test with a test name pattern, both the tests will be selected.

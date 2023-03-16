@@ -80,7 +80,7 @@ test_plan:
           - type: PlanSucceeds                                  # Makes sure plan succeeds
 
           - type: PlanFailsWithError                            # Makes sure plan fails and that the error message contains a specific string
-            error_message_contains: Intented to fail            # The string that the error should contain
+            error_message_contains: Intended to fail            # The string that the error should contain
 ```
 
 ```yaml
@@ -135,10 +135,10 @@ ok      schrodinger.com/infra-tester    4.890s
 ```
 
 In the above test summary:
-- TestPlanName is obtained from value of `test_plan` field in the yaml config.
+- `TestPlanName` is obtained from the `name` property of `test_plan` in the yaml config.
 - TestName corresponds to the name of each test defined in the test plan.
-- PlanAssertion1, PlanAssertion2, and so on refers to assertions in the plan step
-- ApplyAssertion1, ApplyAssertion2, and so on refers to assertions in the apply step
+- PlanAssertion1, PlanAssertion2, and so on refers to assertions in the plan step.
+- ApplyAssertion1, ApplyAssertion2, and so on refers to assertions in the apply step.
 
 
 As seen in the test summary, Plan and Apply tests are separated so you can run them separately using `-run`.

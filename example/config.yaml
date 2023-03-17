@@ -15,7 +15,8 @@ test_plan:
             key: value
       plan:
         assertions:
-          - type: PlanFailsWithError
+          - name: PlanMustFailWithSpecifiedError
+            type: PlanFailsWithError
             error_message_contains: Intended to fail
 
     - name: ExampleForResourcesAffected
@@ -32,7 +33,8 @@ test_plan:
       apply:
         is_idempotent: true
         assertions:
-          - type: ResourcesAffected
+          - name: MustAddExactlyOneResource
+            type: ResourcesAffected
             added: 1
 
     - name: ExampleForNoResourcesAffected
@@ -52,7 +54,8 @@ test_plan:
           <<: *complex_object
       apply:
         assertions:
-          - type: OutputsAreEqual
+          - name: MultipleOutputsMustMatch
+            type: OutputsAreEqual
             output_names:
               - sample_output
               - another_output
@@ -65,7 +68,8 @@ test_plan:
           <<: *complex_object
       apply:
         assertions:
-          - type: OutputContains
+          - name: OutputContainsACertainWord
+            type: OutputContains
             output_name: sample_output
             value: working
 
@@ -76,7 +80,8 @@ test_plan:
           <<: *complex_object
       apply:
         assertions:
-          - type: OutputMatchesRegex
+          - name: OutputShouldMatchARegularExpression
+            type: OutputMatchesRegex
             output_name: a_fourth_output
             regex: strings \w+ \d+ apple \d\s+\w+
 
@@ -88,31 +93,37 @@ test_plan:
         assertions:
           - type: ApplySucceeds
 
-          - type: OutputEqual
+          - name: ASimpleOutputEqualExample
+            type: OutputEqual
             output_name: sample_output
             value: it's working
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForBool
+            type: OutputEqual
             output_name: a_boolean_output
             value: true
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForFloat
+            type: OutputEqual
             output_name: a_float_output
             value: 123.11
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForMap
+            type: OutputEqual
             output_name: a_map_output
             value:
               key: value
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForList
+            type: OutputEqual
             output_name: a_list_output
             value:
               - a
               - b
               - c
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForComplexOutput
+            type: OutputEqual
             output_name: a_complex_output
             value:
               seq:
@@ -125,7 +136,8 @@ test_plan:
                   nested_key: nested_value
               boolean: true
 
-          - type: OutputEqual
+          - name: OutputEqualExampleForComplexOutputWithCompleteMatch
+            type: OutputEqual
             output_name: a_complex_output
             complete_match: true
             value:

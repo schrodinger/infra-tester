@@ -9,6 +9,7 @@ import (
 
 type Assertion struct {
 	Type     string
+	Name     string
 	Metadata map[interface{}]interface{} `mapstructure:",remain"`
 }
 

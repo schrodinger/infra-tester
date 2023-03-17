@@ -88,7 +88,12 @@ func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Opti
 		planMetadata := assertions.PlanMetadata{CmdOut: stdOutErr, Err: err}
 
 		for _, assertion := range test.PlanAssertions.Assertions {
-			t.Run(assertion.Type, func(t *testing.T) {
+			subTestName := assertion.Type
+			if assertion.Name != "" {
+				subTestName = assertion.Name
+			}
+
+			t.Run(subTestName, func(t *testing.T) {
 				assertions.RunAssertion(t, terraformOptions, assertion, "plan", planMetadata)
 			})
 		}
@@ -123,7 +128,12 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 		applyMetadata := assertions.ApplyMetadata{CmdOut: stdOutErr, Err: err}
 
 		for _, assertion := range test.ApplyAssertions.Assertions {
-			t.Run(assertion.Type, func(t *testing.T) {
+			subTestName := assertion.Type
+			if assertion.Name != "" {
+				subTestName = assertion.Name
+			}
+
+			t.Run(subTestName, func(t *testing.T) {
 				assertions.RunAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
 			})
 		}

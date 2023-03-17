@@ -15,6 +15,9 @@ test_plan:
             key: value
       plan:
         assertions:
+          - name: ASimplePlanFails
+            type: PlanFails
+
           - name: PlanMustFailWithSpecifiedError
             type: PlanFailsWithError
             error_message_contains: Intended to fail

@@ -24,6 +24,10 @@ var ValidPlanAssertions = map[string]AssertionImplementation{
 		ValidateFunction: func(a Assertion) error { return nil },
 		RunFunction:      AssertPlanSucceeds,
 	},
+	"PlanFails": {
+		ValidateFunction: func(a Assertion) error { return nil },
+		RunFunction:      AssertPlanFails,
+	},
 	"PlanFailsWithError": {
 		ValidateFunction: validatePlanFailsWithErrorAssertion,
 		RunFunction:      AssertPlanFailsWithError,
@@ -37,11 +41,26 @@ func AssertPlanSucceeds(t *testing.T, terraformOptions *terraform.Options, asser
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		t.Error("stepMetadata is not of type PlanMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err != nil {
-		t.Error("Terraform plan is expected to succeed.")
+		ErrorAndSkip(t, "Terraform plan is expected to succeed.")
+	}
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+func AssertPlanFails(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, stepMetadata interface{}) {
+	// cast stepMetadata to PlanMetadata
+	var planMetadata PlanMetadata
+	var ok bool
+	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
+	}
+
+	if planMetadata.Err == nil {
+		ErrorAndSkip(t, "Terraform plan is expected to failed.")
 	}
 }
 

@@ -1,7 +1,7 @@
 test_plan:
   name: ResourceA
   tests:
-    - name: MyFirstTest
+    - name: ExampleForPlanFailure
       vars:
         check_condition: true
         complex_object: &complex_object
@@ -16,9 +16,9 @@ test_plan:
       plan:
         assertions:
           - type: PlanFailsWithError
-            error_message_contains: Intented to fail
+            error_message_contains: Intended to fail
 
-    - name: MySecondTest
+    - name: ExampleForResourcesAffected
       with_clean_state: true
       vars:
         check_condition: false
@@ -35,23 +35,7 @@ test_plan:
           - type: ResourcesAffected
             added: 1
 
-    - name: MyThirdTest
-      vars:
-        check_condition: false
-        complex_object:
-          <<: *complex_object
-          id: 2
-          count: 2
-      apply:
-        ensure_idempotent: true
-        assertions:
-          - type: ApplySucceeds
-
-          - type: OutputEqual
-            output_name: sample_output
-            value: it's working
-
-    - name: MyFourthTest
+    - name: ExampleForNoResourcesAffected
       vars:
         check_condition: false
         complex_object:
@@ -61,8 +45,8 @@ test_plan:
         assertions:
           - type: NoResourcesAffected
 
-    - name: MyFifthTest
-      vars:
+    - name: ExampleForOutputsAreEqual
+      vars: &valid_vars
         check_condition: false
         complex_object:
           <<: *complex_object
@@ -74,10 +58,86 @@ test_plan:
               - another_output
               - yet_another_output
 
+    - name: ExampleForOutputContains
+      vars:
+        check_condition: false
+        complex_object:
+          <<: *complex_object
+      apply:
+        assertions:
           - type: OutputContains
             output_name: sample_output
             value: working
 
+    - name: ExampleForOutputMatchesRegex
+      vars:
+        check_condition: false
+        complex_object:
+          <<: *complex_object
+      apply:
+        assertions:
           - type: OutputMatchesRegex
             output_name: a_fourth_output
             regex: strings \w+ \d+ apple \d\s+\w+
+
+    - name: ExampleForOutputEqual
+      vars:
+        <<: *valid_vars
+      apply:
+        ensure_idempotent: true
+        assertions:
+          - type: ApplySucceeds
+
+          - type: OutputEqual
+            output_name: sample_output
+            value: it's working
+
+          - type: OutputEqual
+            output_name: a_boolean_output
+            value: true
+
+          - type: OutputEqual
+            output_name: a_float_output
+            value: 123.11
+
+          - type: OutputEqual
+            output_name: a_map_output
+            value:
+              key: value
+
+          - type: OutputEqual
+            output_name: a_list_output
+            value:
+              - a
+              - b
+              - c
+
+          - type: OutputEqual
+            output_name: a_complex_output
+            value:
+              seq:
+                - a
+                - b
+                - c
+              map:
+                key: value
+                nested_map:
+                  nested_key: nested_value
+              boolean: true
+
+          - type: OutputEqual
+            output_name: a_complex_output
+            complete_match: true
+            value:
+              natural_number: 100
+              float: 123.11
+              seq:
+                - a
+                - b
+                - c
+              str: hello
+              map:
+                key: value
+                nested_map:
+                  nested_key: nested_value
+              boolean: true

@@ -75,8 +75,9 @@ func AssertApplySucceeds(t *testing.T, terraformOptions *terraform.Options, asse
 // ------------------------------------------------------------------------------------------------------------------------------
 
 type outputEqualMetadata struct {
-	OutputName string `mapstructure:"output_name"`
-	Value      string
+	OutputName    string                      `mapstructure:"output_name"`
+	CompleteMatch bool                        `mapstructure:"complete_match"`
+	Value         map[interface{}]interface{} `mapstructure:",remain"`
 }
 
 func validateOutputEqualAssertion(assertion Assertion) error {
@@ -91,8 +92,19 @@ func validateOutputEqualAssertion(assertion Assertion) error {
 		return fmt.Errorf("output_name is either not defined or is empty")
 	}
 
-	if outputEqualMetadata.Value == "" {
-		return fmt.Errorf("value is either not defined or is empty")
+	val, ok := outputEqualMetadata.Value["value"]
+	if !ok {
+		return fmt.Errorf("value is not defined")
+	}
+
+	if val == nil {
+		return fmt.Errorf("value can not be empty")
+	}
+
+	for key := range outputEqualMetadata.Value {
+		if key != "value" {
+			return fmt.Errorf("unexpected key: %s", key)
+		}
 	}
 
 	return nil
@@ -108,10 +120,20 @@ func AssertOutputEqual(t *testing.T, terraformOptions *terraform.Options, assert
 
 	// Get properties
 	outputName := outputEqualMetadata.OutputName
-	expectedValue := outputEqualMetadata.Value
-	outputValue := terraform.Output(t, terraformOptions, outputName)
+	expectedValue := outputEqualMetadata.Value["value"]
+	outputValue := terraform.OutputAll(t, terraformOptions)[outputName]
 
-	assert.Equal(t, outputValue, expectedValue, "The property \""+outputName+"\" has an unexpected value. Expected value is: \""+expectedValue+"\". Value received is: \""+outputValue+"\".")
+	if outputEqualMetadata.CompleteMatch {
+		assert.Truef(
+			t,
+			partialDeepCompare(expectedValue, outputValue) && partialDeepCompare(outputValue, expectedValue),
+			"The property %s has an unexpected value.\n\nExpected value:\n%+v\n\nActual Value:\n%+v", outputName, expectedValue, outputValue)
+	} else {
+		assert.Truef(
+			t,
+			partialDeepCompare(expectedValue, outputValue),
+			"The property %s has an unexpected value.\n\nExpected following value(s):\n%+v\n\nActual value:\n%+v", outputName, expectedValue, outputValue)
+	}
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------

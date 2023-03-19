@@ -58,6 +58,9 @@ The configuration has the following structure:
 ```yaml
 test_plan:
   name: <Name of the test plan, usually the resource or module name>
+  destroy_vars:                                         # Optional field, if defined passes vars defined here to the final cleanup destroy.
+    vars_to_pass_to_tf: apple                           # By default, infra-tester passes vars in the last test to terraform destroy.
+    ...                                                 # If the last test has invalid vars, this field will be useful to pass valid vars to successfully run destroy.
   tests:
     - name: <Name of the test>
       with_clean_state: true                            # Whether this test should be run in a clean state. If true, terraform destroy will be run before running the tests.
@@ -95,7 +98,10 @@ test_plan:
         assertions:
           - type: PlanSucceeds                                  # Makes sure plan succeeds
 
-          - type: PlanFailsWithError                            # Makes sure plan fails and that the error message contains a specific string
+          - type: PlanFails                                     # Makes sure plan fails
+
+          - name: PlanMustFailWithSpecificError                 # Optional name for assertions. If defined, this will replace assertion type as the test name in test summary. 
+            type: PlanFailsWithError                            # Makes sure plan fails and that the error message contains a specific string
             error_message_contains: Intended to fail            # The string that the error should contain
 ```
 
@@ -104,17 +110,40 @@ test_plan:
         assertions:
           - type: ApplySucceeds                                 # Makes sure apply succeeds
 
-          - type: OutputEqual                                   # compare the value of an output
+          - name: ASimpleOutputEqual                            # compare the value of an output
+            type: OutputEqual
             output_name: sample_output                          # name of the output
             value: it's working                                 # the value it should be equal to
 
-          - type: OutputsAreEqual                               # make sure values of multiple outputs are equal
+          - name: OutputEqualForComplexOutputWithCompleteMatch  # compare the value of complex output
+            type: OutputEqual
+            complete_match: true                                # When enabled, ensure 'value' and terraform output must matches exactly with no fields and it's values missing or added in either of them. Default is false, which allows you to specify just the fields you need to check.
+            output_name: a_complex_output                       # name of the output
+            value:
+              a_map:
+                key: value
+                one: 1
+                float: 123.11
+              a_seq: [1, 2, 3]
+              bool: true
+
+          - name: OutputEqualForComplexOutputWithPartialMatch   # An example of partial check which only checks fields specified in value.
+            type: OutputEqual
+            output_name: a_complex_output
+            value:
+              a_map:
+                float: 123.11                                   # Checks just the value of 'a_map.float', doesn't check any other a_map.* keys
+              bool: true                                        # checks just the value of 'bool' field at this level.
+
+          - name: CheckMultipleOutputs                          # make sure values of multiple outputs are equal
+            type: OutputsAreEqual
             output_names:                                       # the list of output names, all of which should have same value
               - sample_output
               - another_output
               - yet_another_output
 
-          - type: OutputContains                                # Makes sure the value of an output contains a string
+          - name: EnsureOutputContainsString                    # Makes sure the value of an output contains a string
+            type: OutputContains
             output_name: sample_output                          # name of the output
             value: working                                      # the substring value the output must contain
 
@@ -125,7 +154,8 @@ test_plan:
             # changed: 0                                        # if "changed" key is omitted, it won't be checked
             # deleted: 5                                        # can also specify number of resources deleted
 
-          - type: OutputMatchesRegex                            # asserts an output matches a regular expression
+          - name: OutputMatchesARegularExpression               # asserts an output matches a regular expression
+            type: OutputMatchesRegex
             output_name: an_output                              # output name
             regex: strings \w+ \d+ apple \d\s+\w+               # regular expression
 ```
@@ -153,8 +183,8 @@ ok      schrodinger.com/infra-tester    4.890s
 In the above test summary:
 - `TestPlanName` is obtained from the `name` property of `test_plan` in the yaml config.
 - `TestName` corresponds to the `name` of each test defined in the test plan.
-- `PlanAssertion1`, `PlanAssertion2`, and so on refers to assertions in the plan step.
-- `ApplyAssertion1`, `ApplyAssertion2`, and so on refers to assertions in the apply step.
+- `PlanAssertion1`, `PlanAssertion2`, and so on refers to name (if defined, else assertion type) of the assertions in the plan step.
+- `ApplyAssertion1`, `ApplyAssertion2`, and so on refers to name (if defined, else assertion type) of the assertions in the apply step.
 
 
 As seen in the test summary, Plan and Apply tests are separated so you can run them separately using `-test.run` flag.

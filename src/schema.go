@@ -8,8 +8,9 @@ type Config struct {
 }
 
 type TestPlan struct {
-	Name  string
-	Tests []Test
+	Name        string
+	Tests       []Test
+	DestroyVars map[string]interface{} `mapstructure:"destroy_vars"`
 }
 
 type Test struct {

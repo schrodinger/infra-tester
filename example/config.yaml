@@ -1,18 +1,23 @@
+vars: &valid_vars
+  check_condition: false
+  complex_object: &complex_object
+    id: 0
+    count: 1
+    str: "string"
+    seq:
+      - one
+      - two
+    map:
+      key: value
+
 test_plan:
   name: ResourceA
+  destroy_vars: *valid_vars
   tests:
     - name: ExampleForPlanFailure
       vars:
         check_condition: true
-        complex_object: &complex_object
-          id: 0
-          count: 0
-          str: "string"
-          seq:
-            - one
-            - two
-          map:
-            key: value
+        complex_object: *complex_object
       plan:
         assertions:
           - name: ASimplePlanFails
@@ -156,3 +161,14 @@ test_plan:
                 nested_map:
                   nested_key: nested_value
               boolean: true
+
+    - name: TestDestroyVarsForInvalidVars
+      vars:
+        check_condition: true
+        complex_object:
+          <<: *complex_object
+          count: -100
+      plan:
+        assertions:
+          - name: ASimplePlanFails
+            type: PlanFails

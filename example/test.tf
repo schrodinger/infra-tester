@@ -16,6 +16,7 @@ variable "complex_object" {
 }
 
 resource "time_static" "example" {
+  count = var.complex_object.count
   lifecycle {
     precondition {
       condition     = var.check_condition != true || var.complex_object.count == 100

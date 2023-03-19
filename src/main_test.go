@@ -5,6 +5,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
@@ -21,7 +22,7 @@ func TestMain(t *testing.T) {
 	}
 
 	// // fmt.Printf("DEBUG: ")
-	// spew.Dump(testPlan)
+	spew.Dump(testPlan)
 
 	// Validate the tests
 	if err = validateTests(testPlan.Tests); err != nil {
@@ -71,17 +72,25 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 	}
 
 	t.Log("A final destroy will be called to cleanup any left over resources")
+	// Set terraform vars to destroy vars if they are provided
+	if testPlan.DestroyVars != nil {
+		t.Log("Using destroy_vars for final destroy")
+		terraformOptions.Vars = testPlan.DestroyVars
+	}
 }
 
 func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
 	t.Run("Plan", func(t *testing.T) {
-		if test.Vars != nil {
-			terraformOptions.Vars = test.Vars
-		}
-
 		if test.WithCleanState {
 			t.Logf("INFO: with_clean_state enabled - running destroy before plan for %s", test.Name)
-			terraform.Destroy(t, terraformOptions)
+			_, err := terraform.DestroyE(t, terraformOptions)
+			if err != nil {
+				assertions.ErrorAndSkipf(t, "ERROR: Failure during terraform destroy: %s", err)
+			}
+		}
+
+		if test.Vars != nil {
+			terraformOptions.Vars = test.Vars
 		}
 
 		stdOutErr, err := terraform.PlanE(t, terraformOptions)
@@ -106,16 +115,16 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 			t.SkipNow()
 		}
 
-		if test.Vars != nil {
-			terraformOptions.Vars = test.Vars
-		}
-
 		if test.WithCleanState {
 			t.Logf("INFO: with_clean_state enabled - running destroy before apply for %s", test.Name)
 			_, err := terraform.DestroyE(t, terraformOptions)
 			if err != nil {
 				assertions.ErrorAndSkipf(t, "ERROR: Failure during terraform destroy: %s", err)
 			}
+		}
+
+		if test.Vars != nil {
+			terraformOptions.Vars = test.Vars
 		}
 
 		var stdOutErr string

@@ -5,7 +5,6 @@ import (
 	"os"
 	"testing"
 
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
@@ -20,9 +19,6 @@ func TestMain(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ERROR: Failed to process all tests: %s", err)
 	}
-
-	// // fmt.Printf("DEBUG: ")
-	spew.Dump(testPlan)
 
 	// Validate the tests
 	if err = validateTests(testPlan.Tests); err != nil {

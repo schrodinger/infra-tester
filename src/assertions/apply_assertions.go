@@ -123,16 +123,18 @@ func AssertOutputEqual(t *testing.T, terraformOptions *terraform.Options, assert
 	expectedValue := outputEqualMetadata.Value["value"]
 	outputValue := terraform.OutputAll(t, terraformOptions)[outputName]
 
-	if outputEqualMetadata.CompleteMatch {
-		assert.Truef(
-			t,
-			partialDeepCompare(expectedValue, outputValue) && partialDeepCompare(outputValue, expectedValue),
-			"The property %s has an unexpected value.\n\nExpected value:\n%+v\n\nActual Value:\n%+v", outputName, expectedValue, outputValue)
-	} else {
-		assert.Truef(
-			t,
-			partialDeepCompare(expectedValue, outputValue),
-			"The property %s has an unexpected value.\n\nExpected following value(s):\n%+v\n\nActual value:\n%+v", outputName, expectedValue, outputValue)
+	partialComparisonResult := partialDeepCompare(expectedValue, outputValue)
+	if partialComparisonResult != nil {
+		ErrorAndSkipf(t, "The property %s has an unexpected value.\n\nExpected value:\n%+v\n\nActual Value:\n%+v\n\nReason: %s", outputName, expectedValue, outputValue, partialComparisonResult.Error())
+	}
+
+	if !outputEqualMetadata.CompleteMatch {
+		return
+	}
+
+	fullComparisonResult := partialDeepCompare(outputValue, expectedValue)
+	if fullComparisonResult != nil {
+		ErrorAndSkipf(t, "The property %s has an unexpected value.\n\nExpected following value(s):\n%+v\n\nActual value:\n%+v\n\nReason: %s", outputName, expectedValue, outputValue, fullComparisonResult.Error())
 	}
 }
 

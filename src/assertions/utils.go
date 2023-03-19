@@ -1,6 +1,8 @@
 package assertions
 
-func partialDeepCompare(a, b interface{}) bool {
+import "fmt"
+
+func partialDeepCompare(a, b interface{}) error {
 	switch typedA := a.(type) {
 	case bool:
 		return partialDeepCompareBool(typedA, b)
@@ -15,88 +17,114 @@ func partialDeepCompare(a, b interface{}) bool {
 	case map[string]interface{}:
 		return partialDeepCompareMap(typedA, b)
 	default:
-		return false
+		return fmt.Errorf("type %T is not supported, please raise an issue in the infra-tester GitHub repo", a)
 	}
 }
 
-func partialDeepCompareBool(typedA bool, b interface{}) bool {
+func partialDeepCompareBool(typedA bool, b interface{}) error {
 	typedB, ok := b.(bool)
 	if !ok {
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to bool", b, b)
 	}
 
-	return typedA == typedB
+	if typedA == typedB {
+		return nil
+	}
+
+	return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 }
 
-func partialDeepCompareFloat64(typedA float64, b interface{}) bool {
+func partialDeepCompareFloat64(typedA float64, b interface{}) error {
 	switch typedB := b.(type) {
 	// Handle both int and float64 types for second data type
 	case float64:
-		return typedA == typedB
+		if typedA == typedB {
+			return nil
+		}
+
+		return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 	case int:
-		return typedA == float64(typedB)
+		if typedA == float64(typedB) {
+			return nil
+		}
+
+		return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 	default:
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to float64 or int", b, b)
 	}
 }
 
-func partialDeepCompareInt(typedA int, b interface{}) bool {
+func partialDeepCompareInt(typedA int, b interface{}) error {
 	switch typedB := b.(type) {
 	// Handle both int and float64 types for second data type
 	case float64:
-		return float64(typedA) == typedB
+		if float64(typedA) == typedB {
+			return nil
+		}
+
+		return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 	case int:
-		return typedA == typedB
+		if typedA == typedB {
+			return nil
+		}
+
+		return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 	default:
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to float64 or int", b, b)
 	}
 }
 
-func partialDeepCompareString(typedA string, b interface{}) bool {
+func partialDeepCompareString(typedA string, b interface{}) error {
 	typedB, ok := b.(string)
 	if !ok {
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to string", b, b)
 	}
 
-	return typedA == typedB
+	if typedA == typedB {
+		return nil
+	}
+
+	return fmt.Errorf("%+v does not equal %+v", typedA, typedB)
 }
 
-func partialDeepCompareSlice(typedA []interface{}, b interface{}) bool {
+func partialDeepCompareSlice(typedA []interface{}, b interface{}) error {
 	typedB, ok := b.([]interface{})
 	if !ok {
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to []interface{}", b, b)
 	}
 
 	if len(typedA) != len(typedB) {
-		return false
+		return fmt.Errorf("length of %+v does not equal length of %+v", typedA, typedB)
 	}
 
 	for i := range typedA {
-		if !partialDeepCompare(typedA[i], typedB[i]) {
-			return false
+		result := partialDeepCompare(typedA[i], typedB[i])
+		if result != nil {
+			return result
 		}
 	}
 
-	return true
+	return nil
 }
 
-func partialDeepCompareMap(typedA map[string]interface{}, b interface{}) bool {
+func partialDeepCompareMap(typedA map[string]interface{}, b interface{}) error {
 	typedB, ok := b.(map[string]interface{})
 	if !ok {
-		return false
+		return fmt.Errorf("%+v of type %T could not be cast to map[string]interface{}", b, b)
 	}
 
 	// We are only interested in the keys that are present in the first map
 	for key, aValue := range typedA {
 		bValue, ok := typedB[key]
 		if !ok {
-			return false
+			return fmt.Errorf("key %s is not present in %+v", key, typedB)
 		}
 
-		if !partialDeepCompare(aValue, bValue) {
-			return false
+		result := partialDeepCompare(aValue, bValue)
+		if result != nil {
+			return result
 		}
 	}
 
-	return true
+	return nil
 }

@@ -3,17 +3,19 @@ package test
 import (
 	"fmt"
 	"log"
+
+	"schrodinger.com/infra-tester/assertions"
 )
 
 func validateTest(test Test) error {
 	for _, assertion := range test.PlanAssertions.Assertions {
-		if err := validateAssertion(assertion, "plan"); err != nil {
+		if err := assertions.ValidateAssertion(assertion, "plan"); err != nil {
 			return fmt.Errorf("assertion '%s' for plan step failed validation because - %s", assertion.Type, err)
 		}
 	}
 
 	for _, assertion := range test.ApplyAssertions.Assertions {
-		if err := validateAssertion(assertion, "apply"); err != nil {
+		if err := assertions.ValidateAssertion(assertion, "apply"); err != nil {
 			return fmt.Errorf("assertion '%s' for apply step failed validation because - %s", assertion.Type, err)
 		}
 	}

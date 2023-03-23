@@ -1,4 +1,4 @@
-package test
+package assertions
 
 import (
 	"fmt"
@@ -10,6 +10,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type PlanAssertions struct {
+	Assertions []Assertion
+}
+
 type PlanMetadata struct {
 	CmdOut string
 	Err    error
@@ -19,6 +23,10 @@ var ValidPlanAssertions = map[string]AssertionImplementation{
 	"PlanSucceeds": {
 		ValidateFunction: func(a Assertion) error { return nil },
 		RunFunction:      AssertPlanSucceeds,
+	},
+	"PlanFails": {
+		ValidateFunction: func(a Assertion) error { return nil },
+		RunFunction:      AssertPlanFails,
 	},
 	"PlanFailsWithError": {
 		ValidateFunction: validatePlanFailsWithErrorAssertion,
@@ -33,11 +41,26 @@ func AssertPlanSucceeds(t *testing.T, terraformOptions *terraform.Options, asser
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		t.Fatal("stepMetadata is not of type PlanMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err != nil {
-		t.Fatal("Terraform plan is expected to succeed.")
+		ErrorAndSkip(t, "Terraform plan is expected to succeed.")
+	}
+}
+
+// ------------------------------------------------------------------------------------------------------------------------------
+
+func AssertPlanFails(t *testing.T, terraformOptions *terraform.Options, assertion Assertion, stepMetadata interface{}) {
+	// cast stepMetadata to PlanMetadata
+	var planMetadata PlanMetadata
+	var ok bool
+	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
+	}
+
+	if planMetadata.Err == nil {
+		ErrorAndSkip(t, "Terraform plan is expected to failed.")
 	}
 }
 
@@ -66,18 +89,18 @@ func AssertPlanFailsWithError(t *testing.T, terraformOptions *terraform.Options,
 	var planFailsWithErrorMetadata planFailsWithErrorMetadata
 	err := mapstructure.Decode(assertion.Metadata, &planFailsWithErrorMetadata)
 	if err != nil {
-		t.FailNow()
+		ErrorAndSkipf(t, "Error decoding assertion metadata: %s", err)
 	}
 
 	// cast stepMetadata to PlanMetadata
 	var planMetadata PlanMetadata
 	var ok bool
 	if planMetadata, ok = stepMetadata.(PlanMetadata); !ok {
-		t.Fatal("stepMetadata is not of type PlanMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type PlanMetadata")
 	}
 
 	if planMetadata.Err == nil {
-		t.Fatal("Terraform plan is expected to fail.")
+		ErrorAndSkip(t, "Terraform plan is expected to fail.")
 	}
 
 	receivedError := strings.Replace(planMetadata.Err.Error(), "\n", " ", -1)

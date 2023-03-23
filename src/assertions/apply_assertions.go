@@ -1,4 +1,4 @@
-package test
+package assertions
 
 import (
 	"fmt"
@@ -9,6 +9,11 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"github.com/stretchr/testify/assert"
 )
+
+type ApplyAssertions struct {
+	EnsureIdempotent bool `mapstructure:"ensure_idempotent"`
+	Assertions       []Assertion
+}
 
 type ApplyMetadata struct {
 	CmdOut string
@@ -59,19 +64,20 @@ func AssertApplySucceeds(t *testing.T, terraformOptions *terraform.Options, asse
 	var applyMetadata ApplyMetadata
 	var ok bool
 	if applyMetadata, ok = stepMetadata.(ApplyMetadata); !ok {
-		t.Fatal("stepMetadata is not of type ApplyMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
 	}
 
 	if applyMetadata.Err != nil {
-		t.Fatal("Terraform apply is expected to succeed.")
+		ErrorAndSkip(t, "Terraform apply is expected to succeed.")
 	}
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
 
 type outputEqualMetadata struct {
-	OutputName  string `mapstructure:"output_name"`
-	OutputValue string `mapstructure:"output_value"`
+	OutputName    string                      `mapstructure:"output_name"`
+	CompleteMatch bool                        `mapstructure:"complete_match"`
+	Value         map[interface{}]interface{} `mapstructure:",remain"`
 }
 
 func validateOutputEqualAssertion(assertion Assertion) error {
@@ -86,8 +92,19 @@ func validateOutputEqualAssertion(assertion Assertion) error {
 		return fmt.Errorf("output_name is either not defined or is empty")
 	}
 
-	if outputEqualMetadata.OutputValue == "" {
-		return fmt.Errorf("output_value is either not defined or is empty")
+	val, ok := outputEqualMetadata.Value["value"]
+	if !ok {
+		return fmt.Errorf("value is not defined")
+	}
+
+	if val == nil {
+		return fmt.Errorf("value can not be empty")
+	}
+
+	for key := range outputEqualMetadata.Value {
+		if key != "value" {
+			return fmt.Errorf("unexpected key: %s", key)
+		}
 	}
 
 	return nil
@@ -98,15 +115,27 @@ func AssertOutputEqual(t *testing.T, terraformOptions *terraform.Options, assert
 
 	err := mapstructure.Decode(assertion.Metadata, &outputEqualMetadata)
 	if err != nil {
-		t.Fatalf("error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties
 	outputName := outputEqualMetadata.OutputName
-	expectedValue := outputEqualMetadata.OutputValue
-	outputValue := terraform.Output(t, terraformOptions, outputName)
+	expectedValue := outputEqualMetadata.Value["value"]
+	outputValue := terraform.OutputAll(t, terraformOptions)[outputName]
 
-	assert.Equal(t, outputValue, expectedValue, "The property \""+outputName+"\" has an unexpected value. Expected value is: \""+expectedValue+"\". Value received is: \""+outputValue+"\".")
+	partialComparisonResult := partialDeepCompare(expectedValue, outputValue)
+	if partialComparisonResult != nil {
+		ErrorAndSkipf(t, "The property %s has an unexpected value.\n\nExpected value:\n%+v\n\nActual Value:\n%+v\n\nReason: %s", outputName, expectedValue, outputValue, partialComparisonResult.Error())
+	}
+
+	if !outputEqualMetadata.CompleteMatch {
+		return
+	}
+
+	fullComparisonResult := partialDeepCompare(outputValue, expectedValue)
+	if fullComparisonResult != nil {
+		ErrorAndSkipf(t, "The property %s has an unexpected value.\n\nExpected following value(s):\n%+v\n\nActual value:\n%+v\n\nReason: %s", outputName, expectedValue, outputValue, fullComparisonResult.Error())
+	}
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------
@@ -136,14 +165,14 @@ func AssertResourcesAffected(t *testing.T, terraformOptions *terraform.Options, 
 	var resourcesModifiedMetadata resourcesModifiedMetadata
 	decoderMetadata, err := decodeWithMetadata(assertion, &resourcesModifiedMetadata)
 	if err != nil {
-		t.Fatalf("error while decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error while decoding assertion metadata: %s", err)
 	}
 
 	// cast stepMetadata to ApplyMetadata
 	var applyMetadata ApplyMetadata
 	var ok bool
 	if applyMetadata, ok = stepMetadata.(ApplyMetadata); !ok {
-		t.Fatalf("stepMetadata is not of type ApplyMetadata")
+		ErrorAndSkip(t, "stepMetadata is not of type ApplyMetadata")
 	}
 
 	resourcesCount := terraform.GetResourceCount(t, applyMetadata.CmdOut)
@@ -196,7 +225,7 @@ func AssertOutputsAreEqual(t *testing.T, terraformOptions *terraform.Options, as
 
 	err := mapstructure.Decode(assertion.Metadata, &outputsAreEqualMetadata)
 	if err != nil {
-		t.Fatalf("error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// get output names and values
@@ -246,7 +275,7 @@ func AssertOutputContains(t *testing.T, terraformOptions *terraform.Options, ass
 
 	err := mapstructure.Decode(assertion.Metadata, &outputContainsMetadata)
 	if err != nil {
-		t.Fatalf("error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties
@@ -292,7 +321,7 @@ func AssertOutputMatchesRegex(t *testing.T, terraformOptions *terraform.Options,
 
 	err := mapstructure.Decode(assertion.Metadata, &outputMatchesMetadata)
 	if err != nil {
-		t.Fatalf("error decoding assertion metadata: %s", err)
+		ErrorAndSkipf(t, "error decoding assertion metadata: %s", err)
 	}
 
 	// Get properties

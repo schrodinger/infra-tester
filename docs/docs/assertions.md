@@ -18,7 +18,7 @@ If a value is set for `name`, it will be used in generating the test summary.
 ### **`type`**
 
 The value of `type` must be one of the valid assertion types available.
-You can refer to [**plan**](/plan_assertions) and [**apply**](/apply_assertions) assertions for the list of valid assertions.
+You can refer to [**plan**](plan_assertions.md) and [**apply**](apply_assertions.md) assertions for the list of valid assertions.
 
 ### Assertion Inputs
 

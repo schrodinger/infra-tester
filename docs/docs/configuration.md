@@ -10,8 +10,8 @@ test_plan:
 
   # Optional field, if defined passes vars defined
   # here to the final cleanup destroy.
-  destroy_vars: 
-    # By default, infra-tester passes vars in the last test to terraform 
+  destroy_vars:
+    # By default, infra-tester passes vars in the last test to terraform
     # destroy. If the last test has invalid vars, this field will be useful
     # to pass valid vars to successfully run destroy.
     ...
@@ -106,12 +106,12 @@ All data types are supported, and *infra-tester* will convert the values in YAML
 ### **`test_plan.tests.plan`**
 
 This contains the list of assertions that will be run after running **`terraform plan`** with the `test.vars` as input. Assertions can be
-defined under the key `assertions`. Read more about assertions [here](/assertions).
+defined under the key `assertions`. Read more about assertions [here](assertions.md).
 
 ### **`test_plan.tests.apply`**
 
 This contains the list of assertions that will be run after running **`terraform apply`** with the `test.vars` as input. Assertions can be
-defined under the key `assertions`. Read more about assertions [here](/assertions).
+defined under the key `assertions`. Read more about assertions [here](assertions.md).
 
 If the tests require terraform apply to be idempotent, you can set `ensure_idempotent` to `true` to make sure the apply does not
 result in any more changes when run a second time after the first apply.

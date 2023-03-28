@@ -1,6 +1,6 @@
 # Apply Assertions
 
-Plan assertions will be run after running **`terraform apply`**.
+Apply assertions will be run after running **`terraform apply`**.
 
 ### ApplySucceeds
 
@@ -141,8 +141,8 @@ Compares multiple terraform outputs and asserts that all the specified outputs h
     - name: <name>
       type: OutputsAreEqual
       output_names:
-        - <output_name>
-        - <output_name>
+        - <output_name_1>
+        - <output_name_2>
         ...
     ```
 

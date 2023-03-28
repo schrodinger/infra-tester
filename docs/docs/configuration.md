@@ -22,8 +22,8 @@ test_plan:
     - name: <Name of the test>
 
       # Whether this test should be run in a clean state. If true, terraform
-      # destroy will be run before running the test.
-      with_clean_state: true
+      # destroy will be run before running the test. Default is false.
+      with_clean_state: false
 
       # Any values to be passed as vars to terraform.
       # Support complex objects as well.
@@ -48,9 +48,9 @@ test_plan:
           # Example
           - type: PlanSucceeds
 
-      # Any assertions that are to be run during the plan step.
+      # Any assertions that are to be run during the apply step.
       apply:
-        # If true, makes sure the plan is idempotent.
+        # If true, makes sure the apply is idempotent.
         ensure_idempotent: true
         assertions:                         # list of assertions
           - type: <AssertionType>           # The type of assertion

@@ -8,10 +8,17 @@ nav:
       - assertions.md
       - plan_assertions.md
       - apply_assertions.md
+    - "More Information":
+      - test_output.md
+      - infra_tester_internals.md
 
 markdown_extensions:
   - admonition
-  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - pymdownx.tabbed:
       alternate_style: true
   - toc:

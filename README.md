@@ -100,7 +100,7 @@ test_plan:
 
           - type: PlanFails                                     # Makes sure plan fails
 
-          - name: PlanMustFailWithSpecificError                 # Optional name for assertions. If defined, this will replace assertion type as the test name in test summary. 
+          - name: PlanMustFailWithSpecificError                 # Optional name for assertions. If defined, this will replace assertion type as the test name in test summary.
             type: PlanFailsWithError                            # Makes sure plan fails and that the error message contains a specific string
             error_message_contains: Intended to fail            # The string that the error should contain
 ```

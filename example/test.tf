@@ -7,8 +7,8 @@ variable "complex_object" {
   type = object({
     count = number
     id    = number
-    str = string
-    seq = list(string)
+    str   = string
+    seq   = list(string)
     map = object({
       key = string
     })
@@ -56,25 +56,25 @@ output "a_map_output" {
 }
 
 output "a_number_output" {
-    value = 10
+  value = 10
 }
 
 output "a_float_output" {
-    value = 123.11
+  value = 123.11
 }
 
 output "a_complex_output" {
-    value = {
-        natural_number = 100
-        float = 123.11
-        str = "hello"
-        seq = ["a", "b", "c"]
-        map = {
-            nested_map = {
-                nested_key = "nested_value"
-            }
-            key = "value"
-        }
-        boolean = true
+  value = {
+    natural_number = 100
+    float          = 123.11
+    str            = "hello"
+    seq            = ["a", "b", "c"]
+    map = {
+      nested_map = {
+        nested_key = "nested_value"
+      }
+      key = "value"
     }
+    boolean = true
+  }
 }

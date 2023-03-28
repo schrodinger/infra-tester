@@ -32,7 +32,7 @@ With *infra-tester*, these could be achieved without writing tests in a programm
 
         ```shell
         # Download the latest release binary
-        $ curl --location --silent --fail --show-error -o infra_tester https://github.com/schrodinger/infra-tester/releases/download/v0.1.0/infra_tester_linux_amd64
+        $ curl --location --silent --fail --show-error -o infra_tester infra_tester https://github.com/schrodinger/infra-tester/releases/latest/download/infra_tester_linux_amd64
 
         # Make it executable
         $ chmod +x infra_tester

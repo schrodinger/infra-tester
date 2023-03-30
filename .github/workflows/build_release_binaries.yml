@@ -1,11 +1,11 @@
 name: Create Release
 
 on:
-  pull_request:
-    branches:
-      - main
-
   workflow_dispatch:
+    inputs:
+      version:
+        description: Tag name for the release.
+        required: true
 
 jobs:
   create_release:
@@ -20,8 +20,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: Release ${{ github.event.inputs.version }}
           draft: true
 
   build_draft_release:

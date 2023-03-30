@@ -1,0 +1,63 @@
+name: Create Release
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  create_draft_release:
+    strategy:
+      matrix:
+        include:
+          - runner: ubuntu-latest
+            os: linux
+
+          - runner: windows-latest
+            os: windows
+
+          - runner: macos-latest
+            os: macos
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Go toolchain
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'src/go.mod'
+          cache-dependency-path: 'src/go.sum'
+
+      - name: Compile Test Binary
+        run: |
+          cd src/
+          go test -c -o ../bin/infra-tester
+
+      - name: Run Example Terraform Tests
+        run: |
+          cd example
+          ../bin/infra-tester -test.v
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
+          asset_path: ./bin/infra-tester
+          asset_name: infra_tester_${{ matrix.os }}_x86_64
+          asset_content_type: application/octet-stream

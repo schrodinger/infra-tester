@@ -69,5 +69,5 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_path: ./bin/infra-tester
-          asset_name: infra_tester_${{ matrix.os }}_x86_64
+          asset_name: infra-tester-${{ matrix.os }}-x86_64
           asset_content_type: application/octet-stream

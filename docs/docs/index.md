@@ -33,7 +33,7 @@ With *infra-tester*, these could be achieved without writing tests in a programm
         ```shell
         # Download the latest release binary
         $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
-          https://github.com/schrodinger/infra-tester/releases/latest/download/infra_tester_linux_x86_64
+          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64
 
         # Make it executable
         $ chmod +x infra_tester
@@ -47,7 +47,7 @@ With *infra-tester*, these could be achieved without writing tests in a programm
         ```shell
         # Download the latest release binary
         $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
-          https://github.com/schrodinger/infra-tester/releases/latest/download/infra_tester_macos_x86_64
+          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64
 
         # Make it executable
         $ chmod +x infra_tester
@@ -60,7 +60,7 @@ With *infra-tester*, these could be achieved without writing tests in a programm
 
         1. Download the latest Windows release binary from the below URL:
             ```
-            https://github.com/schrodinger/infra-tester/releases/latest/download/infra_tester_windows_x86_64
+            https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-windows-x86_64
             ```
 
         2. Move it to a directory under `PATH`, or add the directory where you'd like to keep the executable to `PATH`.

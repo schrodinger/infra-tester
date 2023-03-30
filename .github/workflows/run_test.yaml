@@ -32,7 +32,7 @@ jobs:
           cache-dependency-path: 'src/go.sum'
 
       - name: Code Consistency Checks
-        if: matrix.os == "ubuntu-latest"
+        if: matrix.os == 'ubuntu-latest'
         run: |
           cd src/
           output=$(gofmt -l .)

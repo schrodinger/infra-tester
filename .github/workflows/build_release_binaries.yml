@@ -1,4 +1,4 @@
-name: Create Release
+name: Create Draft Release
 
 on:
   workflow_dispatch:
@@ -8,8 +8,8 @@ on:
         required: true
 
 jobs:
-  create_release:
-    name: Create release
+  create_draft_release:
+    name: Create Draft Release
     runs-on: ubuntu-latest
     outputs:
       upload_url: ${{ steps.create_release.outputs.upload_url }}
@@ -24,8 +24,9 @@ jobs:
           release_name: Release v${{ github.event.inputs.version }}
           draft: true
 
-  build_draft_release:
-    needs: create_release
+  build_release_binary:
+    needs: create_draft_release
+    name: Build Release Binary
     strategy:
       matrix:
         include:
@@ -52,15 +53,29 @@ jobs:
           go-version-file: 'src/go.mod'
           cache-dependency-path: 'src/go.sum'
 
+      - name: Generate Binary Name
+        id: binary_name
+        shell: bash
+        run: |
+          binary_name="infra-tester"
+          release_binary_name="infra-tester-${{ matrix.os }}-x86_64"
+
+          if [[ ${{ matrix.os }} == "windows" ]]; then
+            binary_name="infra-tester.exe"
+            release_binary_name="infra-tester-${{ matrix.os }}-x86_64.exe"
+          fi
+          echo "binary_name=$binary_name" >> "$GITHUB_OUTPUT"
+          echo "release_binary_name=$release_binary_name" >> "$GITHUB_OUTPUT"
+
       - name: Compile Test Binary
         run: |
           cd src/
-          go test -c -o ../bin/infra-tester
+          go test -c -o ../bin/${{ steps.binary_name.outputs.binary_name }}
 
       - name: Run Example Terraform Tests
         run: |
           cd example
-          ../bin/infra-tester -test.v
+          ../bin/${{ steps.binary_name.outputs.binary_name }} "-test.v"
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -68,6 +83,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
-          asset_path: ./bin/infra-tester
-          asset_name: infra-tester-${{ matrix.os }}-x86_64
+          asset_path: ./bin/${{ steps.binary_name.outputs.binary_name }}
+          asset_name: ${{ steps.binary_name.outputs.release_binary_name }}
           asset_content_type: application/octet-stream

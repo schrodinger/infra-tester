@@ -39,14 +39,22 @@ jobs:
           echo "$output"
           test -z $output
 
-      - name: Compile Test Binary
+      - name: Generate Binary Name
+        id: binary_name
         shell: bash
+        run: |
+          binary_name="infra-tester"
+          if [[ ${{ matrix.os }} == "windows-latest" ]]; then
+            binary_name="infra-tester.exe"
+          fi
+          echo "binary_name=$binary_name" >> "$GITHUB_OUTPUT"
+
+      - name: Compile Test Binary
         run: |
           cd src/
-          go test -c -o ../bin/infra-tester
+          go test -c -o ../bin/${{ steps.binary_name.outputs.binary_name }}
 
       - name: Run Example Terraform Tests
-        shell: bash
         run: |
           cd example
-          ../bin/infra-tester -test.v
+          ../bin/${{ steps.binary_name.outputs.binary_name }} -test.v

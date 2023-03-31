@@ -63,7 +63,7 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         1. Download the latest Windows release binary from the below URL:
             ```
-            https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-windows-x86_64
+            https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-windows-x86_64.exe
             ```
 
         2. Move it to a directory under `PATH`, or add the directory where you'd like to keep the executable to `PATH`.

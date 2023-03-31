@@ -57,4 +57,4 @@ jobs:
       - name: Run Example Terraform Tests
         run: |
           cd example
-          ../bin/${{ steps.binary_name.outputs.binary_name }} -test.v
+          ../bin/${{ steps.binary_name.outputs.binary_name }} "-test.v"

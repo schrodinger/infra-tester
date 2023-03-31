@@ -40,11 +40,13 @@ jobs:
           test -z $output
 
       - name: Compile Test Binary
+        shell: bash
         run: |
           cd src/
           go test -c -o ../bin/infra-tester
 
       - name: Run Example Terraform Tests
+        shell: bash
         run: |
           cd example
           ../bin/infra-tester -test.v

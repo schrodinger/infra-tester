@@ -14,4 +14,4 @@ With *infra-tester*, these could be achieved without writing tests in a programm
 
 ## Documentation
 
-You can find extensive documentation on *infra-tester* [here](https://jubilant-disco-ey46y7z.pages.github.io/).
+You can find extensive documentation on *infra-tester* [here](https://schrodinger.github.io/infra-tester/).

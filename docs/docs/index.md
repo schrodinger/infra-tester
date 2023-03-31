@@ -10,6 +10,9 @@ With *infra-tester*, these could be achieved without writing tests in a programm
 
 ## Getting Started
 
+Terraform must be already installed on your system and available in `$PATH` as *infra-tester* does not bundle Terraform.
+See [**official Terraform documentation**](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform) on how to install it.
+
 #### Install *infra-tester*
 
 !!! info "Install"
@@ -28,11 +31,12 @@ With *infra-tester*, these could be achieved without writing tests in a programm
         $ sudo mv infra-tester /usr/local/bin
         ```
 
-    === "Install the Latest Release Binary"
+    === "Install Latest Linux Release"
 
         ```shell
         # Download the latest release binary
-        $ curl --location --silent --fail --show-error -o infra_tester infra_tester https://github.com/schrodinger/infra-tester/releases/latest/download/infra_tester_linux_amd64
+        $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
+          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64
 
         # Make it executable
         $ chmod +x infra_tester
@@ -40,6 +44,29 @@ With *infra-tester*, these could be achieved without writing tests in a programm
         # Move it to a directory in the $PATH
         $ sudo mv infra_tester /usr/local/bin
         ```
+
+    === "Install Latest MacOS Release"
+
+        ```shell
+        # Download the latest release binary
+        $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
+          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64
+
+        # Make it executable
+        $ chmod +x infra_tester
+
+        # Move it to a directory in the $PATH
+        $ sudo mv infra_tester /usr/local/bin
+        ```
+
+    === "Install Latest Windows Release"
+
+        1. Download the latest Windows release binary from the below URL:
+            ```
+            https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-windows-x86_64.exe
+            ```
+
+        2. Move it to a directory under `PATH`, or add the directory where you'd like to keep the executable to `PATH`.
 
 #### Use *infra-tester* to run tests
 

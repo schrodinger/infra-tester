@@ -10,6 +10,9 @@ With *infra-tester*, these could be achieved without writing tests in a programm
 
 ## Getting Started
 
+Terraform must be already installed on your system and available in `$PATH` as *infra-tester* does not bundle Terraform.
+See [**official Terraform documentation**](https://developer.hashicorp.com/terraform/tutorials/aws-get-started/install-cli#install-terraform) on how to install it.
+
 #### Install *infra-tester*
 
 !!! info "Install"

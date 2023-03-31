@@ -45,7 +45,7 @@ jobs:
         run: |
           binary_name="infra-tester"
           if [[ ${{ matrix.os }} == "windows-latest" ]]; then
-            binary_name="infra-tester.exe"
+            binary_name="${binary_name}.exe"
           fi
           echo "binary_name=$binary_name" >> "$GITHUB_OUTPUT"
 

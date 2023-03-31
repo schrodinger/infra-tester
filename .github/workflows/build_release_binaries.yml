@@ -61,8 +61,8 @@ jobs:
           release_binary_name="infra-tester-${{ matrix.os }}-x86_64"
 
           if [[ ${{ matrix.os }} == "windows" ]]; then
-            binary_name="infra-tester.exe"
-            release_binary_name="infra-tester-${{ matrix.os }}-x86_64.exe"
+            binary_name="${binary_name}.exe"
+            release_binary_name="${release_binary_name}.exe"
           fi
           echo "binary_name=$binary_name" >> "$GITHUB_OUTPUT"
           echo "release_binary_name=$release_binary_name" >> "$GITHUB_OUTPUT"

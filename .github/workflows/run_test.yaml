@@ -21,6 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Run all pre-commit hooks
+        run: |
+          pip install pre-commit
+          pre-commit run --all
+        if: matrix.os == 'ubuntu-latest'
+
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false

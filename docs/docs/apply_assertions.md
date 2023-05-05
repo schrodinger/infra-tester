@@ -284,7 +284,7 @@ Asserts that **`terraform apply`** added, and/or changed, and/or destroyed a spe
 
 ### NoResourcesAffected
 
-Similar to [ResourcesAffected](#ResourcesAffected), but asserts that no resources have been added, changed, or destroyed.
+Similar to [ResourcesAffected](./apply_assertions.md#ResourcesAffected), but asserts that no resources have been added, changed, or destroyed.
 
 === "Schema"
     ```yaml

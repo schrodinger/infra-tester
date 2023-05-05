@@ -34,8 +34,8 @@ jobs:
       - name: Install Go toolchain
         uses: actions/setup-go@v4
         with:
-          go-version-file: 'src/go.mod'
-          cache-dependency-path: 'src/go.sum'
+          go-version-file: "src/go.mod"
+          cache-dependency-path: "src/go.sum"
 
       - name: Code Consistency Checks
         if: matrix.os == 'ubuntu-latest'

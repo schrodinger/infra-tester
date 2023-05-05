@@ -29,7 +29,7 @@ jobs:
           curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
 
           # Install tflint
-          conda install -c conda-forge tflint
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
 
           pre-commit run --all
         if: matrix.os == 'ubuntu-latest'

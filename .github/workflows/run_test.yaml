@@ -24,6 +24,13 @@ jobs:
       - name: Run all pre-commit hooks
         run: |
           pip install pre-commit
+
+          # Install tfsec
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+          # Install tflint
+          conda install -c conda-forge tflint
+
           pre-commit run --all
         if: matrix.os == 'ubuntu-latest'
 

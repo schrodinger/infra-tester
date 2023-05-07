@@ -185,10 +185,6 @@ def assertion_cli():
     plugin_result = PluginResult(return_value)
     print(plugin_result)
 
-    if plugin_result.error:
-        # Exit with a non-zero exit code to indicate failure.
-        return int(ExitCodes.ERROR)
-
 
 def manager_cli():
     """

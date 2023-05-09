@@ -1,8 +1,10 @@
+from typing import Dict
+
 from infra_tester_plugins import BaseAssertionPlugin
 
 
 class ExampleAssertionPlugin(BaseAssertionPlugin):
-    def validate_inputs(self, inputs: dict[str, object]):
+    def validate_inputs(self, inputs: Dict[str, object]):
         print("Running validate_inputs from ExampleAssertionPlugin")
         print("Inputs:", inputs)
 
@@ -15,7 +17,7 @@ class ExampleAssertionPlugin(BaseAssertionPlugin):
         return None
 
     def run_assertion(
-        self, inputs: dict[str, object], state: dict[str, object]
+        self, inputs: Dict[str, object], state: Dict[str, object]
     ):
         print("Running run_assertion from ExampleAssertionPlugin")
         print("Inputs:", inputs)
@@ -34,7 +36,7 @@ class ExampleAssertionPlugin(BaseAssertionPlugin):
 
         return None
 
-    def cleanup(self, inputs: dict[str, object], state: dict[str, object]):
+    def cleanup(self, inputs: Dict[str, object], state: Dict[str, object]):
         print("Running cleanup from ExampleAssertionPlugin")
         print("Inputs:", inputs)
         print("State:", state)

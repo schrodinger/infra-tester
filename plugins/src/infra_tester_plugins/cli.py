@@ -5,7 +5,7 @@ import os
 import sys
 from enum import IntEnum
 from importlib.metadata import entry_points
-from typing import Callable
+from typing import Callable, Union
 
 from . import PLUGIN_GROUP, BaseAssertionPlugin
 from .result import PluginResult
@@ -28,9 +28,10 @@ def get_plugin(group: str, name: str) -> Callable[[], BaseAssertionPlugin]:
         KeyError: If the plugin with the given name does not exist.
 
     Returns:
-        dict[str, BasePlugin]: The plugin with the given name.
+        Callable[[], BaseAssertionPlugin]: The callable that loads
+        the plugin.
     """
-    entry_point = entry_points(group=group, name=name)
+    entry_point = [ep for ep in entry_points()[group] if ep.name == name]
     if len(entry_point) == 0:
         raise ValueError(f"No plugin with name '{name}' found.")
     elif len(entry_point) > 1:
@@ -42,7 +43,21 @@ def get_plugin(group: str, name: str) -> Callable[[], BaseAssertionPlugin]:
     return entry_point[0].load()
 
 
-def assertion_cli():
+def ensure_python_version() -> None:
+    """
+    Ensure that the Python version is supported.
+    """
+    if sys.version_info < (3, 8):
+        print(
+            "ERROR: (infra-tester-plugins) Python 3.7",
+            "or higher is required to run this program.",
+            f"Current version is {sys.version}.",
+        )
+
+        sys.exit(1)
+
+
+def assertion_cli() -> Union[int, None]:
     """Entry point for the assertion CLI.
 
     Raises:
@@ -54,6 +69,8 @@ def assertion_cli():
                 1: Error
                 2: Invalid input
     """
+
+    ensure_python_version()
 
     parser = argparse.ArgumentParser(
         description="This program is part of infra-tester plugin framework. \
@@ -136,8 +153,10 @@ def assertion_cli():
     try:
         state = json.loads(args.state) if args.state is not None else None
     except json.JSONDecodeError as e:
-        print(f"ERROR: (infra-tester-plugins) \
-                Failure while parsing state: {e}.")
+        print(
+            f"ERROR: (infra-tester-plugins) \
+                Failure while parsing state: {e}."
+        )
 
         # Exit with a non-zero exit code to indicate failure.
         return int(ExitCodes.INVALID_INPUT)
@@ -149,8 +168,10 @@ def assertion_cli():
     # string returned by the plugin will be invalid.
     with contextlib.redirect_stdout(sys.stderr):
         try:
-            print(f"INFO: (infra-tester-plugins) \
-                    Running action {args.action}.")
+            print(
+                f"INFO: (infra-tester-plugins) \
+                    Running action {args.action}."
+            )
 
             print(
                 f"INFO: ------------------- {args.name} \
@@ -171,8 +192,10 @@ def assertion_cli():
                                     --------------------"
             )
 
-            print(f"INFO: (infra-tester-plugins) \
-                    Action {args.action} completed.")
+            print(
+                f"INFO: (infra-tester-plugins) \
+                    Action {args.action} completed."
+            )
         except Exception as e:
             print(
                 f"ERROR: (infra-tester-plugins) \
@@ -191,6 +214,8 @@ def manager_cli():
     Entry point for the manager CLI.
     """
 
+    ensure_python_version()
+
     parser = argparse.ArgumentParser(
         description="This program is part of infra-tester plugin framework."
     )
@@ -208,5 +233,5 @@ def manager_cli():
         sys.exit(1)
 
     if args.list:
-        for entry_point in entry_points(group=PLUGIN_GROUP):
+        for entry_point in entry_points()[PLUGIN_GROUP]:
             print(entry_point.name)

@@ -1,9 +1,9 @@
 import sys
-from typing import Any, Union
+from typing import Any, Dict, Union
 
 
 class BaseAssertionPlugin(object):
-    def validate_inputs(self, inputs: dict[Any, Any]) -> Union[str, None]:
+    def validate_inputs(self, inputs: Dict[Any, Any]) -> Union[str, None]:
         """
         Validate the inputs provided to the plugin. The inputs
         will be in the form of a dictionary with the key being the
@@ -16,7 +16,7 @@ class BaseAssertionPlugin(object):
         implementation error and will be logged as such.
 
         Args:
-            inputs (dict[str, object]): The inputs provided to the
+            inputs (Dict[str, object]): The inputs provided to the
             plugin.
 
         Raises:
@@ -37,7 +37,7 @@ class BaseAssertionPlugin(object):
         )
 
     def run_assertion(
-        self, inputs: dict[Any, Any], state: dict[Any, Any]
+        self, inputs: Dict[Any, Any], state: Dict[Any, Any]
     ) -> Union[str, None]:
         """
         This method should contain the logic to run the assertion
@@ -52,10 +52,10 @@ class BaseAssertionPlugin(object):
         error and will be logged as such.
 
         Args:
-            inputs (dict[str, object]): The inputs provided to the
+            inputs (Dict[str, object]): The inputs provided to the
             plugin.
 
-            state (dict[str, object]): The current Terraform state
+            state (Dict[str, object]): The current Terraform state
             as a dictionary.
 
         Raises:
@@ -72,7 +72,7 @@ class BaseAssertionPlugin(object):
              '{sys._getframe().f_code.co_name}'"
         )
 
-    def cleanup(self, inputs: dict[Any, Any], state: dict[Any, Any]):
+    def cleanup(self, inputs: Dict[Any, Any], state: Dict[Any, Any]):
         """
         Cleanup any resources used by the plugin. This method
         will be called after the plugin has been run regardless
@@ -86,10 +86,10 @@ class BaseAssertionPlugin(object):
         is considered successful if it does not raise any exception.
 
         Args:
-            inputs (dict[str, object]): The inputs provided to the
+            inputs (Dict[str, object]): The inputs provided to the
             plugin.
 
-            state (dict[str, object]): The current Terraform state
+            state (Dict[str, object]): The current Terraform state
             as a dictionary.
         """
 

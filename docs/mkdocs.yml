@@ -4,6 +4,7 @@ repo_name: schrodinger/infra-tester
 nav:
   - index.md
   - configuration.md
+  - writing_tests.md
   - Assertions:
       - assertions.md
       - plan_assertions.md
@@ -35,6 +36,8 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.expand
+    - content.code.annotate
+    - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default

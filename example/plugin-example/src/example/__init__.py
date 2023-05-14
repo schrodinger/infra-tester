@@ -9,8 +9,8 @@ class ExampleAssertionPlugin(BaseAssertionPlugin):
         print("Inputs:", inputs)
 
         if (
-            "should_fail_validation" in inputs["metadata"]
-            and inputs["metadata"]["should_fail_validation"]
+            "should_fail_validation" in inputs
+            and inputs["should_fail_validation"]
         ):
             return "This is a validation error message."
 
@@ -24,8 +24,8 @@ class ExampleAssertionPlugin(BaseAssertionPlugin):
         print("State:", state)
 
         if (
-            "should_error" in inputs["metadata"]
-            and inputs["metadata"]["should_error"]
+            "should_error" in inputs
+            and inputs["should_error"]
         ):
             message = "This is an assertion error message."
             if "custom_message" in state and state["custom_message"]:

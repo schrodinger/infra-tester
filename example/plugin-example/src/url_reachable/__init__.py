@@ -65,13 +65,11 @@ class URLReachableAssertionPlugin(BaseAssertionPlugin):
     def validate_inputs(self, inputs: Dict[str, object]):
         print("Running validate_inputs for URLReachable")
 
-        plugin_inputs = inputs["metadata"]
-
-        url_validation = self.validate_url(plugin_inputs)
+        url_validation = self.validate_url(inputs)
         if url_validation:
             return url_validation
 
-        status_code_validation = self.validate_status_code(plugin_inputs)
+        status_code_validation = self.validate_status_code(inputs)
         if status_code_validation:
             return status_code_validation
 
@@ -128,14 +126,14 @@ class URLReachableAssertionPlugin(BaseAssertionPlugin):
     ):
         print("Running run_assertion for URLReachable")
 
-        plugin_inputs = inputs["metadata"]
+        plugin_inputs = inputs
         url = plugin_inputs[self.FIELD_URL]
         from_outputs = plugin_inputs.get(self.FIELD_FROM_OUTPUTS, False)
 
         if from_outputs:
             url = self.get_url_from_outputs(url, state)
 
-        expected_status_code = inputs["metadata"].get(
+        expected_status_code = inputs.get(
             self.FIELD_STATUS_CODE, 200
         )
 

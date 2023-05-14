@@ -36,8 +36,10 @@ def get_plugin(group: str, name: str) -> Callable[[], BaseAssertionPlugin]:
         raise ValueError(f"No plugin with name '{name}' found.")
     elif len(entry_point) > 1:
         raise RuntimeError(
-            f"Multiple plugins with name '{name}' found. \
-             This should never happen."
+            (
+                f"Multiple plugins with name '{name}' found. "
+                "This should never happen."
+            )
         )
 
     return entry_point[0].load()
@@ -73,8 +75,10 @@ def assertion_cli() -> Union[int, None]:
     ensure_python_version()
 
     parser = argparse.ArgumentParser(
-        description="This program is part of infra-tester plugin framework. \
-                    It is used to run plugins."
+        description=(
+            "This program is part of infra-tester plugin framework. "
+            "It is used to run plugins."
+        )
     )
 
     parser.add_argument(
@@ -114,24 +118,24 @@ def assertion_cli() -> Union[int, None]:
         assertion = plugin_load_callable()
     except ValueError:
         print(
-            f"ERROR: (infra-tester-plugins) \
-                Could not find plugin '{args.name}'."
+            "ERROR: (infra-tester-plugins) ",
+            f"Could not find plugin '{args.name}'.",
         )
         print(
-            "INFO: Please make sure the PIP package \
-               for the plugin is installed."
+            "INFO: Please make sure the PIP package ",
+            "for the plugin is installed.",
         )
         print(
-            "INFO: Run `infra-tester-plugin-manager --list` \
-               to list all available plugins."
+            "INFO: Run `infra-tester-plugin-manager --list` ",
+            "to list all available plugins.",
         )
 
         # Exit with a non-zero exit code to indicate failure.
         return int(ExitCodes.ERROR)
     except Exception as e:
         print(
-            f"ERROR: (infra-tester-plugins) \
-              Failure while loading plugin '{args.name}': {e}."
+            "ERROR: (infra-tester-plugins) ",
+            f"Failure while loading plugin '{args.name}': {e}.",
         )
 
         # Exit with a non-zero exit code to indicate failure.
@@ -143,19 +147,33 @@ def assertion_cli() -> Union[int, None]:
         inputs = json.loads(args.inputs) if args.inputs is not None else None
     except json.JSONDecodeError as e:
         print(
-            f"ERROR: (infra-tester-plugins) \
-                Failure while parsing inputs: {e}."
+            "ERROR: (infra-tester-plugins) ",
+            f"Failure while parsing inputs: {e}.",
         )
 
         # Exit with a non-zero exit code to indicate failure.
         return int(ExitCodes.INVALID_INPUT)
 
+    # The inputs from infra-tester are expected to be in the 'metadata`
+    # key.
+    if "metadata" not in inputs:
+        print(
+            "ERROR: (infra-tester-plugins) ",
+            "Inputs must contain a 'metadata' key.",
+        )
+
+        # Exit with a non-zero exit code to indicate failure.
+        return int(ExitCodes.INVALID_INPUT)
+
+    # We don't care about the other keys in the inputs for now.
+    inputs = inputs["metadata"]
+
     try:
         state = json.loads(args.state) if args.state is not None else None
     except json.JSONDecodeError as e:
         print(
-            f"ERROR: (infra-tester-plugins) \
-                Failure while parsing state: {e}."
+            "ERROR: (infra-tester-plugins) ",
+            f"Failure while parsing state: {e}.",
         )
 
         # Exit with a non-zero exit code to indicate failure.
@@ -169,13 +187,13 @@ def assertion_cli() -> Union[int, None]:
     with contextlib.redirect_stdout(sys.stderr):
         try:
             print(
-                f"INFO: (infra-tester-plugins) \
-                    Running action {args.action}."
+                "INFO: (infra-tester-plugins) ",
+                f"Running action {args.action}."
             )
 
             print(
-                f"INFO: ------------------- {args.name} \
-                        -------------------{os.linesep}"
+                f"INFO: ------------------- {args.name}"
+                f"-------------------{os.linesep}"
             )
 
             if args.action == "validate_inputs":
@@ -188,18 +206,18 @@ def assertion_cli() -> Union[int, None]:
                 raise ValueError(f"Unknown action '{args.action}'")
 
             print(
-                f"{os.linesep}INFO: -------------------- {args.name} \
-                                    --------------------"
+                f"{os.linesep}INFO: ------------------- {args.name}",
+                "-------------------",
             )
 
             print(
-                f"INFO: (infra-tester-plugins) \
-                    Action {args.action} completed."
+                "INFO: (infra-tester-plugins) ",
+                "Action {args.action} completed.",
             )
         except Exception as e:
             print(
-                f"ERROR: (infra-tester-plugins) \
-                  Failure while running action {args.action}: {e}."
+                "ERROR: (infra-tester-plugins) ",
+                f"Failure while running action {args.action}: {e}.",
             )
 
             # Exit with a non-zero exit code to indicate failure.

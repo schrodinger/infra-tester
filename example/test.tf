@@ -88,3 +88,7 @@ output "a_complex_output" {
     boolean = true
   }
 }
+
+output "sample_url" {
+  value = "https://www.schrodinger.com"
+}

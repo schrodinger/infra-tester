@@ -39,12 +39,12 @@ sequenceDiagram
     plugin-host-->>infra-tester: Returns validation result
 
     infra-tester->>plugin-host: Run plugin assertion
-    plugin-host-->>plugin: Calls `run_assertion` function of the plugin
+    plugin-host->>plugin: Calls `run_assertion` function of the plugin
     plugin-->>plugin-host: Returns error message if any
     plugin-host-->>infra-tester: Returns assertion result
 
     infra-tester->>plugin-host: Run plugin cleanup
-    plugin-host-->>plugin: Calls `cleanup` function of the plugin
+    plugin-host->>plugin: Calls `cleanup` function of the plugin
     plugin-->>plugin-host: Returns error message if any
     plugin-host-->>infra-tester: Returns cleanup result
 ```

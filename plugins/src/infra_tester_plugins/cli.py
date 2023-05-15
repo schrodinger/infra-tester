@@ -251,5 +251,5 @@ def manager_cli():
         sys.exit(1)
 
     if args.list:
-        for entry_point in entry_points()[PLUGIN_GROUP]:
+        for entry_point in entry_points().get(PLUGIN_GROUP, []):
             print(entry_point.name)

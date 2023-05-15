@@ -43,6 +43,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install plugin framework and example plugins
+        run: |
+          pip install ./plugins ./example/plugin-example
+
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_wrapper: false
@@ -71,10 +80,6 @@ jobs:
         run: |
           cd src/
           go test -c -o ../bin/${{ steps.binary_name.outputs.binary_name }}
-
-      - name: Install plugin framework and example plugins
-        run: |
-          pip install ./plugins ./example/plugin-example
 
       - name: Run Example Terraform Tests
         run: |

@@ -162,6 +162,32 @@ test_plan:
                   nested_key: nested_value
               boolean: true
 
+    - name: ExamplesCustomAssertions
+      vars: *valid_vars
+      apply:
+        assertions:
+          - name: ThisOneAlwaysSucceeds
+            type: ExampleAssertion
+
+          - name: URLShouldBeReachable
+            type: URLReachable
+            url: https://www.schrodinger.com
+
+          - name: URLRedirectsAreFollowedToReachableURL
+            type: URLReachable
+            url: http://www.schrodinger.com
+            status_code: 200
+
+          - name: OutputURLShouldBeReachable
+            type: URLReachable
+            url: sample_url
+            from_outputs: true
+
+          - name: URLShouldNotBeReachable
+            type: URLReachable
+            url: https://google.com/doesnotexist
+            status_code: 404
+
     - name: TestDestroyVarsForInvalidVars
       vars:
         check_condition: true

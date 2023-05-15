@@ -1,0 +1,13 @@
+[project]
+name = "infra-tester-plugins"
+version = "0.1.0"
+license = { file = "LICENSE" }
+
+[project.urls]
+homepage = "https://schrodinger.github.io/infra-tester/"
+documentation = "https://schrodinger.github.io/infra-tester/"
+repository = "https://github.com/schrodinger/infra-tester"
+
+[project.scripts]
+infra-tester-run-plugin = "infra_tester_plugins.cli:assertion_cli"
+infra-tester-plugin-manager = "infra_tester_plugins.cli:manager_cli"

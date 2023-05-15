@@ -6,13 +6,13 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: check-yaml
-        args: [--allow-multiple-documents]
+        args: [--allow-multiple-documents, --unsafe]
       - id: check-json
       - id: mixed-line-ending
-        args: ['--fix=lf']
+        args: ["--fix=lf"]
         description: Forces to replace line ending by the UNIX 'lf' character.
       - id: check-added-large-files
-        args: ['--maxkb=500']
+        args: ["--maxkb=500"]
       - id: no-commit-to-branch
         args: [--branch, main]
       - id: check-executables-have-shebangs
@@ -20,7 +20,7 @@ repos:
       - id: check-case-conflict
       - id: check-docstring-first
       - id: pretty-format-json
-        args: ['--autofix']
+        args: ["--autofix"]
       - id: check-merge-conflict
       - id: check-symlinks
       - id: check-xml
@@ -45,3 +45,19 @@ repos:
     rev: v3.10.3
     hooks:
       - id: markdown-link-check
+
+  - repo: https://github.com/pycqa/flake8
+    rev: '6.0.0'
+    hooks:
+      - id: flake8
+
+  - repo: https://github.com/PyCQA/isort
+    rev: '5.12.0'
+    hooks:
+      - id: isort
+
+  - repo: https://github.com/adrienverge/yamllint.git
+    rev: v1.31.0
+    hooks:
+      - id: yamllint
+        args: [--strict]

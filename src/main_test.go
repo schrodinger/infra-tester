@@ -9,6 +9,8 @@ import (
 	"github.com/mitchellh/mapstructure"
 	"gopkg.in/yaml.v3"
 	"schrodinger.com/infra-tester/assertions"
+	"schrodinger.com/infra-tester/plugins"
+	"schrodinger.com/infra-tester/utils/cmd"
 )
 
 func TestMain(t *testing.T) {
@@ -20,22 +22,65 @@ func TestMain(t *testing.T) {
 		t.Fatalf("ERROR: Failed to process all tests: %s", err)
 	}
 
-	// Validate the tests
-	if err = validateTests(testPlan.Tests); err != nil {
+	// Build assertion context.
+	assertionContext := buildAssertionContext(t)
+
+	// Validate the tests.
+	if err = validateTests(testPlan, assertionContext); err != nil {
 		assertions.ErrorAndSkipf(t, "ERROR: Failure during test validation: %s", err)
 	}
 
+	// Run the tests.
 	t.Run(testPlan.Name, func(t *testing.T) {
 		_, err = terraform.InitE(t, terraformOptions)
 		if err != nil {
 			assertions.ErrorAndSkipf(t, "ERROR: Failure during terraform init: %s", err)
 		}
 
-		runTests(t, terraformOptions, testPlan)
+		runTests(t, terraformOptions, testPlan, assertionContext)
 	})
 }
 
-func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPlan) {
+func buildAssertionContext(t *testing.T) *assertions.AssertionContext {
+	// Build assertion context.
+	assertionContext := assertions.AssertionContext{}
+
+	// Setup plugins
+	setupPlugins(t, &assertionContext)
+
+	return &assertionContext
+}
+
+func setupPlugins(t *testing.T, assertionContext *assertions.AssertionContext) {
+	// Check if plugins are supported in the current environment.
+	cmdRunner := cmd.NewCmdRunner()
+	if err := plugins.CanRunPlugins(cmdRunner); err == nil {
+		t.Log("INFO: Plugin framework is installed.")
+		pluginManager, err := plugins.NewPipPluginManager(cmdRunner)
+
+		if err != nil {
+			t.Fatalf("ERROR: Failed to create plugin manager: %s."+
+				"Please file an issue with the logs.", err)
+		}
+
+		assertionContext.PluginManager = &pluginManager
+		assertionContext.AvailablePlugins, err = pluginManager.ListPlugins()
+		if err != nil {
+			t.Fatalf("ERROR: Failed to list plugins: %s. "+
+				"Please raise an issue with the logs", err)
+		}
+	} else {
+		t.Logf("INFO: Can not use plugins in this environment: %s", err)
+		assertionContext.AvailablePlugins = map[string]bool{}
+		assertionContext.PluginManager = nil
+	}
+}
+
+func runTests(
+	t *testing.T,
+	terraformOptions *terraform.Options,
+	testPlan TestPlan,
+	assertionContext *assertions.AssertionContext) {
 	// Run destroy regardless of test results to clean up any left overs
 	defer terraform.Destroy(t, terraformOptions)
 
@@ -47,7 +92,7 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 			if test.PlanAssertions.Assertions == nil {
 				t.Logf("No plan assertions for %s", test.Name)
 			} else {
-				runPlanAssertions(t, test, terraformOptions)
+				runPlanAssertions(t, test, terraformOptions, assertionContext)
 
 				// Skip all the apply assertions if any plan assertions failed. We may want to provide this as an
 				// option in the future.
@@ -62,7 +107,7 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 			if test.ApplyAssertions.Assertions == nil {
 				t.Logf("No apply assertions for %s", test.Name)
 			} else {
-				runApplyAssertions(t, test, terraformOptions, skipApplyTests)
+				runApplyAssertions(t, test, terraformOptions, skipApplyTests, assertionContext)
 			}
 		})
 	}
@@ -75,7 +120,11 @@ func runTests(t *testing.T, terraformOptions *terraform.Options, testPlan TestPl
 	}
 }
 
-func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Options) {
+func runPlanAssertions(
+	t *testing.T,
+	test Test,
+	terraformOptions *terraform.Options,
+	assertionContext *assertions.AssertionContext) {
 	t.Run("Plan", func(t *testing.T) {
 		if test.WithCleanState {
 			t.Logf("INFO: with_clean_state enabled - running destroy before plan for %s", test.Name)
@@ -99,13 +148,24 @@ func runPlanAssertions(t *testing.T, test Test, terraformOptions *terraform.Opti
 			}
 
 			t.Run(subTestName, func(t *testing.T) {
-				assertions.RunAssertion(t, terraformOptions, assertion, "plan", planMetadata)
+				assertions.RunAssertion(
+					t,
+					terraformOptions,
+					assertion,
+					"plan",
+					planMetadata,
+					assertionContext)
 			})
 		}
 	})
 }
 
-func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Options, skipTests bool) {
+func runApplyAssertions(
+	t *testing.T,
+	test Test,
+	terraformOptions *terraform.Options,
+	skipTests bool,
+	assertionContext *assertions.AssertionContext) {
 	t.Run("Apply", func(t *testing.T) {
 		if skipTests {
 			t.SkipNow()
@@ -139,7 +199,13 @@ func runApplyAssertions(t *testing.T, test Test, terraformOptions *terraform.Opt
 			}
 
 			t.Run(subTestName, func(t *testing.T) {
-				assertions.RunAssertion(t, terraformOptions, assertion, "apply", applyMetadata)
+				assertions.RunAssertion(
+					t,
+					terraformOptions,
+					assertion,
+					"apply",
+					applyMetadata,
+					assertionContext)
 			})
 		}
 	})

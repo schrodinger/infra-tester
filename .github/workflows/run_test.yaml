@@ -16,10 +16,33 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install plugin framework and example plugins
+        run: |
+          pip install ./plugins ./example/plugin-example
+
+      - name: Run all pre-commit hooks
+        run: |
+          pip install pre-commit
+
+          # Install tfsec
+          curl -s https://raw.githubusercontent.com/aquasecurity/tfsec/master/scripts/install_linux.sh | bash
+
+          # Install tflint
+          curl -s https://raw.githubusercontent.com/terraform-linters/tflint/master/install_linux.sh | bash
+
+          pre-commit run --all
+        if: matrix.os == 'ubuntu-latest'
 
       - uses: hashicorp/setup-terraform@v2
         with:
@@ -28,8 +51,8 @@ jobs:
       - name: Install Go toolchain
         uses: actions/setup-go@v4
         with:
-          go-version-file: 'src/go.mod'
-          cache-dependency-path: 'src/go.sum'
+          go-version-file: "src/go.mod"
+          cache-dependency-path: "src/go.sum"
 
       - name: Code Consistency Checks
         if: matrix.os == 'ubuntu-latest'

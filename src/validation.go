@@ -7,15 +7,15 @@ import (
 	"schrodinger.com/infra-tester/assertions"
 )
 
-func validateTest(test Test) error {
+func validateTest(test Test, assertionContext *assertions.AssertionContext) error {
 	for _, assertion := range test.PlanAssertions.Assertions {
-		if err := assertions.ValidateAssertion(assertion, "plan"); err != nil {
+		if err := assertions.ValidateAssertion(assertion, "plan", assertionContext); err != nil {
 			return fmt.Errorf("assertion '%s' for plan step failed validation because - %s", assertion.Type, err)
 		}
 	}
 
 	for _, assertion := range test.ApplyAssertions.Assertions {
-		if err := assertions.ValidateAssertion(assertion, "apply"); err != nil {
+		if err := assertions.ValidateAssertion(assertion, "apply", assertionContext); err != nil {
 			return fmt.Errorf("assertion '%s' for apply step failed validation because - %s", assertion.Type, err)
 		}
 	}
@@ -23,10 +23,10 @@ func validateTest(test Test) error {
 	return nil
 }
 
-func validateTests(tests []Test) error {
+func validateTests(testPlan TestPlan, assertionContext *assertions.AssertionContext) error {
 	validatedTests := make(map[string]Test)
 
-	for _, test := range tests {
+	for _, test := range testPlan.Tests {
 		testName := test.Name
 
 		if test.Name == "" {
@@ -38,7 +38,7 @@ func validateTests(tests []Test) error {
 			return fmt.Errorf("test name '%s' is already defined previously - tests with same name are not allowed", testName)
 		}
 
-		if err := validateTest(test); err != nil {
+		if err := validateTest(test, assertionContext); err != nil {
 			return fmt.Errorf("test '%s' failed validation: %s", testName, err)
 		}
 

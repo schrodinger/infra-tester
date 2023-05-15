@@ -1,3 +1,13 @@
+terraform {
+  required_version = ">= 0.12"
+  required_providers {
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.8"
+    }
+  }
+}
+
 variable "check_condition" {
   type    = bool
   default = true
@@ -77,4 +87,8 @@ output "a_complex_output" {
     }
     boolean = true
   }
+}
+
+output "sample_url" {
+  value = "https://www.schrodinger.com"
 }

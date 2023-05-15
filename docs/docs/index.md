@@ -68,6 +68,12 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         2. Move it to a directory under `PATH`, or add the directory where you'd like to keep the executable to `PATH`.
 
+#### Writing Your First *infra-tester* Test Configuration
+
+The [Writing a Test From Scratch](./writing_tests.md) page provides a simple hands-on
+tutorial where we write a simple Terraform module and then write a test config
+to test it.
+
 #### Use *infra-tester* to run tests
 
 Once *infra-tester* is set up, run the [example tests](https://github.com/schrodinger/infra-tester/tree/main/example):
@@ -85,3 +91,8 @@ Once *infra-tester* is set up, run the [example tests](https://github.com/schrod
     $ infra-tester -test.v
 
     ```
+
+#### Extending *infra-tester* Using Plugins
+
+If you are interested in extending *infra-tester*'s assertion library by writing
+plugins, we provide extensive documentation on how developers can [write plugins](./extending_infra_tester.md) in Python and then use them in the test configuration.

@@ -10,3 +10,20 @@
 
 # Ignore bin/
 bin/**
+
+# Ignore .venv/
+.venv/**
+
+# Python
+*.pyc
+__pycache__/
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+*.egg

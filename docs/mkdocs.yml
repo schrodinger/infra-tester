@@ -2,18 +2,25 @@ site_name: infra-tester
 repo_url: https://github.com/schrodinger/infra-tester
 repo_name: schrodinger/infra-tester
 nav:
-    - index.md
-    - configuration.md
-    - Assertions:
+  - index.md
+  - configuration.md
+  - writing_tests.md
+  - extending_infra_tester.md
+  - Assertions:
       - assertions.md
       - plan_assertions.md
       - apply_assertions.md
-    - "More Information":
+  - "More Information":
       - test_output.md
       - infra_tester_internals.md
 
+extra_css:
+  - css/enhancements.css
+
 markdown_extensions:
   - admonition
+  - pymdownx.snippets
+  - pymdownx.inlinehilite
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid
@@ -26,7 +33,7 @@ markdown_extensions:
 theme:
   name: material
   icon:
-      repo: fontawesome/brands/github
+    repo: fontawesome/brands/github
   font:
     text: Open Sans
     code: JetBrains Mono
@@ -35,6 +42,8 @@ theme:
     - navigation.instant
     - navigation.tracking
     - navigation.expand
+    - content.code.annotate
+    - content.code.copy
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default

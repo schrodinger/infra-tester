@@ -1,0 +1,7 @@
+[project]
+name = "infra-tester-example-plugin"
+version = "0.1.0"
+
+[project.entry-points."infra_tester.assertion"]
+ExampleAssertion = "example:load_plugin"
+URLReachable = "url_reachable:load_plugin"

@@ -35,8 +35,7 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         ```shell
         # Download the latest release binary
-        $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
-          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64
+        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64 -o infra_tester
 
         # Make it executable
         $ chmod +x infra_tester
@@ -49,8 +48,7 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         ```shell
         # Download the latest release binary
-        $ curl --location --silent --fail --show-error -o infra_tester infra_tester \
-          https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64
+        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64 -o infra_tester
 
         # Make it executable
         $ chmod +x infra_tester

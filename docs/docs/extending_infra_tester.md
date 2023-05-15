@@ -67,7 +67,7 @@ You can install the plugin host by installing the `infra-tester-plugins` PIP pac
 
     As of now, you can install the plugin host through PIP using the following command:
     ```shell
-    pip install "git+https://github.com/schrodinger/infra-tester.git#egg=plugins&subdirectory=plugins/"
+    pip install "git+https://github.com/schrodinger/infra-tester.git#subdirectory=plugins/"
     ```
 
     We are currently looking into adding this package to the official PIP registry.
@@ -326,6 +326,7 @@ This section shows an example package that provides two plugins:
                 └── __init__.py
     ```
 
+You can install the above package by running `pip install -e <path/to/package>`.
 
 ### Testing Your Plugin
 

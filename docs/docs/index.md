@@ -35,10 +35,10 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         ```shell
         # Download the latest release binary
-        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64 -o infra_tester
+        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64 -o infra-tester
 
         # Make it executable
-        $ chmod +x infra_tester
+        $ chmod +x infra-tester
 
         # Move it to a directory in the $PATH
         $ sudo mv infra_tester /usr/local/bin
@@ -48,13 +48,13 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
         ```shell
         # Download the latest release binary
-        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64 -o infra_tester
+        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64 -o infra-tester
 
         # Make it executable
-        $ chmod +x infra_tester
+        $ chmod +x infra-tester
 
         # Move it to a directory in the $PATH
-        $ sudo mv infra_tester /usr/local/bin
+        $ sudo mv infra-tester /usr/local/bin
         ```
 
     === "Install Latest Windows Release"
@@ -84,6 +84,11 @@ Once *infra-tester* is set up, run the [example tests](https://github.com/schrod
 
     # Change directory to example tests
     $ cd example/
+
+    # Install plugin example assertions to run test
+    $ pip install \
+        "git+https://github.com/schrodinger/infra-tester.git#subdirectory=plugins/" \
+         "git+https://github.com/schrodinger/infra-tester.git#subdirectory=example/plugin-example/"
 
     # Run the tests
     $ infra-tester -test.v

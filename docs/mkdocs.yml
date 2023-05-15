@@ -13,6 +13,9 @@ nav:
       - test_output.md
       - infra_tester_internals.md
 
+extra_css:
+  - css/enhancements.css
+
 markdown_extensions:
   - admonition
   - pymdownx.superfences:

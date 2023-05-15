@@ -124,10 +124,10 @@ PASS
 
 ## Try Breaking It!
 
-Let's modify the regular expression so that's invalid and see what happens.
+Let's modify the regular expression so that it's invalid and see what happens.
 
 To make it invalid let's remove the first two opening brackets, so the
-line would then be
+line would then be:
 
 ```yaml title="config.yaml" linenums="10"
             regex: ^?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$

@@ -5,6 +5,7 @@ nav:
   - index.md
   - configuration.md
   - writing_tests.md
+  - extending_infra_tester.md
   - Assertions:
       - assertions.md
       - plan_assertions.md
@@ -18,6 +19,8 @@ extra_css:
 
 markdown_extensions:
   - admonition
+  - pymdownx.snippets
+  - pymdownx.inlinehilite
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

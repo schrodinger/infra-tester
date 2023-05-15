@@ -13,8 +13,6 @@ repos:
         description: Forces to replace line ending by the UNIX 'lf' character.
       - id: check-added-large-files
         args: ["--maxkb=500"]
-      - id: no-commit-to-branch
-        args: [--branch, main]
       - id: check-executables-have-shebangs
       - id: check-ast
       - id: check-case-conflict

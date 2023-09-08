@@ -61,11 +61,11 @@ A basic test would be a regular expression matching to make sure the output
 adheres to the RFC 3339 format. Let's see how we can write such a test using
 *infra-tester*.
 
-Let's create a `config.yaml` file in the same directory where we created the
+Let's create a `.infra-tester-config.yaml` file in the same directory where we created the
 Terraform file and copy the below code into it. See the annotation next
 to the code to understand what it does.
 
-```yaml title="config.yaml" linenums="1"
+```yaml title=".infra-tester-config.yaml" linenums="1"
 test_plan:
   name: Time #(1)
   tests: # (2)
@@ -102,7 +102,7 @@ The above configuration is all that's required to test the use case we mentioned
 ## Running the Tests
 
 Change the working directory to the same directory where you created the Terraform
-file and the `config.yaml` file and run
+file and the `.infra-tester-config.yaml` file and run
 
 ```shell
 infra-tester -test.v
@@ -129,7 +129,7 @@ Let's modify the regular expression so that it's invalid and see what happens.
 To make it invalid let's remove the first two opening brackets, so the
 line would then be:
 
-```yaml title="config.yaml" linenums="10"
+```yaml title=".infra-tester-config.yaml" linenums="10"
             regex: ^?:(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$
 
 ```
@@ -153,7 +153,7 @@ easy-to-catch issues. This leads to a better developer experience.
 Let us now try to pass it a valid regular expression but one that doesn't
 adhere to RFC 3339. Let's modify the line to the following:
 
-```yaml title="config.yaml" linenums="10"
+```yaml title=".infra-tester-config.yaml" linenums="10"
             regex: ^((?:T(\d{2}:\d{2}:\d{2}(?:\.\d+)?))(Z|[\+-]\d{2}:\d{2})?)$
 ```
 

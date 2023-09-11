@@ -1,6 +1,6 @@
 # Configuration
 
-*infra-tester* uses [**YAML**](https://yaml.org/) as its configuration language and supports most of YAML 1.1 and 1.2, including support for anchors, tags, map merging, etc. When *infra-tester* is run, it looks for a `config.yaml` file in the current directory to run the tests.
+*infra-tester* uses [**YAML**](https://yaml.org/) as its configuration language and supports most of YAML 1.1 and 1.2, including support for anchors, tags, map merging, etc. When *infra-tester* is run, it looks for a `.infra-tester-config.yaml` file in the current directory to run the tests.
 
 The configuration for *infra-tester* has the following structure:
 

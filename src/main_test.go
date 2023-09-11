@@ -212,7 +212,7 @@ func runApplyAssertions(
 }
 
 func getTests() (TestPlan, error) {
-	yamlConfig, err := os.ReadFile("config.yaml")
+	yamlConfig, err := os.ReadFile(".infra-tester-config.yaml")
 	if err != nil {
 		return TestPlan{}, fmt.Errorf("failed to read yaml config: %v", err)
 	}

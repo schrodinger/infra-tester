@@ -281,9 +281,9 @@ This section shows an example package that provides two plugins:
     --8<-- "example/plugin-example/pyproject.toml"
     ```
 
-=== "Usage in config.yaml"
+=== "Usage in .infra-tester-config.yaml"
 
-    ```yaml linenums="42" title="example/config.yaml"
+    ```yaml linenums="42" title="example/.infra-tester-config.yaml"
     ...
       - name: ExamplesCustomAssertions
         apply:

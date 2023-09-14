@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
+	"github.com/schrodinger/infra-tester/plugins"
 	"github.com/stretchr/testify/assert"
-	"schrodinger.com/infra-tester/plugins"
 )
 
 func GetCustomAssertionImplementation(

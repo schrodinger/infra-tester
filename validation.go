@@ -1,10 +1,10 @@
-package test
+package main
 
 import (
 	"fmt"
 	"log"
 
-	"schrodinger.com/infra-tester/assertions"
+	"github.com/schrodinger/infra-tester/assertions"
 )
 
 func validateTest(test Test, assertionContext *assertions.AssertionContext) error {

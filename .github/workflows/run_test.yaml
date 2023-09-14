@@ -29,7 +29,7 @@ jobs:
 
       - name: Install plugin framework and example plugins
         run: |
-          pip install ./plugins ./example/plugin-example
+          pip install ./python-plugins ./example/plugin-example
 
       - name: Run all pre-commit hooks
         run: |
@@ -51,13 +51,12 @@ jobs:
       - name: Install Go toolchain
         uses: actions/setup-go@v4
         with:
-          go-version-file: "src/go.mod"
-          cache-dependency-path: "src/go.sum"
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
 
       - name: Code Consistency Checks
         if: matrix.os == 'ubuntu-latest'
         run: |
-          cd src/
           output=$(gofmt -l .)
           echo "$output"
           test -z $output
@@ -74,8 +73,7 @@ jobs:
 
       - name: Compile Test Binary
         run: |
-          cd src/
-          go test -c -o ../bin/${{ steps.binary_name.outputs.binary_name }}
+          go build -o bin/${{ steps.binary_name.outputs.binary_name }}
 
       - name: Run Example Terraform Tests
         run: |

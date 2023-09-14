@@ -3,7 +3,7 @@ package plugins
 import (
 	"fmt"
 
-	"schrodinger.com/infra-tester/utils/cmd"
+	"github.com/schrodinger/infra-tester/utils/cmd"
 )
 
 const (

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"schrodinger.com/infra-tester/utils"
-	"schrodinger.com/infra-tester/utils/cmd"
+	"github.com/schrodinger/infra-tester/utils"
+	"github.com/schrodinger/infra-tester/utils/cmd"
 )
 
 const (

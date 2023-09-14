@@ -1,4 +1,4 @@
-package test
+package main
 
 import (
 	"fmt"
@@ -12,6 +12,19 @@ import (
 	"schrodinger.com/infra-tester/plugins"
 	"schrodinger.com/infra-tester/utils/cmd"
 )
+
+func main() {
+	testing.Main(
+		nil,
+		[]testing.InternalTest{
+			{
+				Name: "TestMain",
+				F:    TestMain,
+			},
+		},
+		nil, nil,
+	)
+}
 
 func TestMain(t *testing.T) {
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{})

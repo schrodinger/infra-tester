@@ -59,8 +59,8 @@ jobs:
       - name: Install Go toolchain
         uses: actions/setup-go@v4
         with:
-          go-version-file: "src/go.mod"
-          cache-dependency-path: "src/go.sum"
+          go-version-file: "go.mod"
+          cache-dependency-path: "go.sum"
 
       - name: Generate Binary Name
         id: binary_name
@@ -78,8 +78,7 @@ jobs:
 
       - name: Compile Test Binary
         run: |
-          cd src/
-          go test -c -o ../bin/${{ steps.binary_name.outputs.binary_name }}
+          go build -o bin/${{ steps.binary_name.outputs.binary_name }}
 
       - name: Run Example Terraform Tests
         run: |

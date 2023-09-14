@@ -23,9 +23,8 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
         # Clone the repo
         $ git clone git@github.com:schrodinger/infra-tester.git
 
-        # Go to src directory and build the executable
-        $ cd src/
-        $ go test -c -o infra-tester
+        # Build the executable
+        $ go build -o bin/infra-tester
 
         # Move the binary to a directory in the $PATH
         $ sudo mv infra-tester /usr/local/bin

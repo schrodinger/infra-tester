@@ -114,11 +114,11 @@ You should see the logs appear as the test runs, and finally, the test output is
 printed.
 
 ```
---- PASS: TestMain (3.35s)
-    --- PASS: TestMain/Time (2.97s)
-        --- PASS: TestMain/Time/CurrentTimeOutputTests (1.03s)
-            --- PASS: TestMain/Time/CurrentTimeOutputTests/Apply (1.03s)
-                --- PASS: TestMain/Time/CurrentTimeOutputTests/Apply/TimeStringMatchesRFC3339 (0.09s)
+--- PASS: Tests (3.35s)
+    --- PASS: Tests/Time (2.97s)
+        --- PASS: Tests/Time/CurrentTimeOutputTests (1.03s)
+            --- PASS: Tests/Time/CurrentTimeOutputTests/Apply (1.03s)
+                --- PASS: Tests/Time/CurrentTimeOutputTests/Apply/TimeStringMatchesRFC3339 (0.09s)
 PASS
 ```
 
@@ -138,9 +138,9 @@ Let's run `infra-tester -test.v` to see what happens.
 
 ```
 $ infra-tester -test.v
-=== RUN   TestMain
+=== RUN   Tests
     assertions.go:117: ERROR: Failure during test validation: test 'CurrentTimeOutputTests' failed validation: assertion 'OutputMatchesRegex' for apply step failed validation because - invalid regular expression
---- FAIL: TestMain (0.36s)
+--- FAIL: Tests (0.36s)
 FAIL
 ```
 As you can see, *infra-tester* runs test validation before running any of the
@@ -161,11 +161,11 @@ And now if you run *infra-tester* again, the validation passes, but the test
 fails as expected:
 
 ```
---- FAIL: TestMain (1.60s)
-    --- FAIL: TestMain/Time (1.27s)
-        --- FAIL: TestMain/Time/CurrentTimeOutputTests (0.47s)
-            --- FAIL: TestMain/Time/CurrentTimeOutputTests/Apply (0.47s)
-                --- FAIL: TestMain/Time/CurrentTimeOutputTests/Apply/TimeStringMatchesRFC3339 (0.08s)
+--- FAIL: Tests (1.60s)
+    --- FAIL: Tests/Time (1.27s)
+        --- FAIL: Tests/Time/CurrentTimeOutputTests (0.47s)
+            --- FAIL: Tests/Time/CurrentTimeOutputTests/Apply (0.47s)
+                --- FAIL: Tests/Time/CurrentTimeOutputTests/Apply/TimeStringMatchesRFC3339 (0.08s)
 FAIL
 ```
 

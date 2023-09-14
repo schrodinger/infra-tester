@@ -18,15 +18,15 @@ func main() {
 		nil,
 		[]testing.InternalTest{
 			{
-				Name: "TestMain",
-				F:    TestMain,
+				Name: "Tests",
+				F:    Tests,
 			},
 		},
 		nil, nil,
 	)
 }
 
-func TestMain(t *testing.T) {
+func Tests(t *testing.T) {
 	terraformOptions := terraform.WithDefaultRetryableErrors(t, &terraform.Options{})
 	(*terraformOptions).NoColor = true
 

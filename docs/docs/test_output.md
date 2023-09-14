@@ -3,16 +3,16 @@
 A test summary is generated at the end of the test if *infra-tester* is run with the `-test.v` flag.
 
 ```title="Test Summary"
--- PASS: TestMain (4.39s)
-    --- PASS: TestMain/<TestPlanName> (4.39s)
-        --- PASS: TestMain/<TestPlanName>/<TestName> (0.25s)
-            --- PASS: TestMain/<TestPlanName>/<TestName>/Plan (0.25s)
-                --- PASS: TestMain/<TestPlanName>/<TestName>/Plan/<PlanAssertion1> (0.00s)
-                --- PASS: TestMain/<TestPlanName>/<TestName>/Plan/<PlanAssertion2> (0.00s)
+-- PASS: Tests (4.39s)
+    --- PASS: Tests/<TestPlanName> (4.39s)
+        --- PASS: Tests/<TestPlanName>/<TestName> (0.25s)
+            --- PASS: Tests/<TestPlanName>/<TestName>/Plan (0.25s)
+                --- PASS: Tests/<TestPlanName>/<TestName>/Plan/<PlanAssertion1> (0.00s)
+                --- PASS: Tests/<TestPlanName>/<TestName>/Plan/<PlanAssertion2> (0.00s)
                     ...
-            --- PASS: TestMain/<TestPlanName>/<TestName>/Apply (0.25s)
-                --- PASS: TestMain/<TestPlanName>/<TestName>/Apply/<ApplyAssertion1> (0.00s)
-                --- PASS: TestMain/<TestPlanName>/<TestName>/Apply/<ApplyAssertion2> (0.00s)
+            --- PASS: Tests/<TestPlanName>/<TestName>/Apply (0.25s)
+                --- PASS: Tests/<TestPlanName>/<TestName>/Apply/<ApplyAssertion1> (0.00s)
+                --- PASS: Tests/<TestPlanName>/<TestName>/Apply/<ApplyAssertion2> (0.00s)
                     ...
 PASS
 ok      schrodinger.com/infra-tester    4.890s

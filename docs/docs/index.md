@@ -86,7 +86,7 @@ Once *infra-tester* is set up, run the [example tests](https://github.com/schrod
 
     # Install plugin example assertions to run test
     $ pip install \
-        "git+https://github.com/schrodinger/infra-tester.git#subdirectory=plugins/" \
+        "git+https://github.com/schrodinger/infra-tester.git#subdirectory=python-plugins/" \
          "git+https://github.com/schrodinger/infra-tester.git#subdirectory=example/plugin-example/"
 
     # Run the tests

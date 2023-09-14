@@ -29,7 +29,7 @@ jobs:
 
       - name: Install plugin framework and example plugins
         run: |
-          pip install ./plugins ./example/plugin-example
+          pip install ./python-plugins ./example/plugin-example
 
       - name: Run all pre-commit hooks
         run: |

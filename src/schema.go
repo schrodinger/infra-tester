@@ -1,6 +1,6 @@
 package main
 
-import "schrodinger.com/infra-tester/assertions"
+import "github.com/schrodinger/infra-tester/assertions"
 
 type Config struct {
 	TestPlan TestPlan                    `mapstructure:"test_plan"`

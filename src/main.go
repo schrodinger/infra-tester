@@ -7,10 +7,10 @@ import (
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 	"github.com/mitchellh/mapstructure"
+	"github.com/schrodinger/infra-tester/assertions"
+	"github.com/schrodinger/infra-tester/plugins"
+	"github.com/schrodinger/infra-tester/utils/cmd"
 	"gopkg.in/yaml.v3"
-	"schrodinger.com/infra-tester/assertions"
-	"schrodinger.com/infra-tester/plugins"
-	"schrodinger.com/infra-tester/utils/cmd"
 )
 
 func main() {

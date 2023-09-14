@@ -1,4 +1,4 @@
-module schrodinger.com/infra-tester
+module github.com/schrodinger/infra-tester
 
 go 1.19
 

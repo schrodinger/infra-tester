@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
-	"schrodinger.com/infra-tester/plugins"
-	"schrodinger.com/infra-tester/utils"
+	"github.com/schrodinger/infra-tester/plugins"
+	"github.com/schrodinger/infra-tester/utils"
 )
 
 type Assertion struct {

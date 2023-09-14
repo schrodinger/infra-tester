@@ -15,7 +15,6 @@ A test summary is generated at the end of the test if *infra-tester* is run with
                 --- PASS: Tests/<TestPlanName>/<TestName>/Apply/<ApplyAssertion2> (0.00s)
                     ...
 PASS
-ok      schrodinger.com/infra-tester    4.890s
 ```
 
 In the above test summary:

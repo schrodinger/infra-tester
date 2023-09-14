@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"schrodinger.com/infra-tester/utils/cmd"
+	"github.com/schrodinger/infra-tester/utils/cmd"
 )
 
 type PluginManager interface {

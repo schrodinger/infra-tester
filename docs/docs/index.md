@@ -17,37 +17,18 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
 
 !!! info "Install"
 
-    === "Build From Source"
-
+    === "Install using Go"
         ```shell
-        # Clone the repo
-        $ git clone git@github.com:schrodinger/infra-tester.git
-
-        # Build the executable
-        $ go build -o bin/infra-tester
-
-        # Move the binary to a directory in the $PATH
-        $ sudo mv infra-tester /usr/local/bin
+        go install github.com/schrodinger/infra-tester@latest
         ```
 
-    === "Install Latest Linux Release"
+    === "Install from GitHub Release - Linux and MacOS"
 
         ```shell
+        PLATFORM=linux
+        PLATFORM=macos
         # Download the latest release binary
-        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-linux-x86_64 -o infra-tester
-
-        # Make it executable
-        $ chmod +x infra-tester
-
-        # Move it to a directory in the $PATH
-        $ sudo mv infra_tester /usr/local/bin
-        ```
-
-    === "Install Latest MacOS Release"
-
-        ```shell
-        # Download the latest release binary
-        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-macos-x86_64 -o infra-tester
+        $ curl -L https://github.com/schrodinger/infra-tester/releases/latest/download/infra-tester-${PLATFORM}-x86_64 -o infra-tester
 
         # Make it executable
         $ chmod +x infra-tester
@@ -56,7 +37,7 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
         $ sudo mv infra-tester /usr/local/bin
         ```
 
-    === "Install Latest Windows Release"
+    === "Install from GitHub Release - Windows"
 
         1. Download the latest Windows release binary from the below URL:
             ```
@@ -64,6 +45,21 @@ See [**official Terraform documentation**](https://developer.hashicorp.com/terra
             ```
 
         2. Move it to a directory under `PATH`, or add the directory where you'd like to keep the executable to `PATH`.
+
+    === "Build From Source"
+
+        ```shell
+        # Clone the repo
+        $ git clone git@github.com:schrodinger/infra-tester.git
+
+        # Build the executable and move the binary to a directory in the $PATH
+        $ cd infra-tester && go build -o bin/infra-tester
+        $ sudo mv infra-tester /usr/local/bin
+
+        # OR you may run go install
+        $ go install
+
+        ```
 
 #### Writing Your First *infra-tester* Test Configuration
 

@@ -1,0 +1,4 @@
+/* Improve link colors for dark mode */
+[data-md-color-scheme="slate"] {
+    --md-typeset-a-color: #2962FF !important;
+}
